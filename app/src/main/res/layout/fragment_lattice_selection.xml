@@ -2,12 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/latticeLayout"
     android:layout_height="wrap_content"
     tools:context=".Fragment.LatticeSelectionFragment"
     android:paddingBottom="10dp"
     >
 
+
+
+
+
     <ScrollView
+        android:layout_marginTop="50dp"
         android:id="@+id/scrollViewCustom"
         android:background="#FF0000"
         android:layout_width="match_parent"
@@ -55,22 +61,49 @@
                     android:textSize="42sp" />
             </TableRow>
 
-            <TableRow>
-
-
-
-            </TableRow>
-
         </TableLayout>
+
     </ScrollView>
+
     <Button
         android:id="@+id/nextStepBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="70dp"
+        android:layout_below="@+id/scrollViewCustom"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="184dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="216dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/bordered_button_green"
-        android:text="Next step"
-        android:layout_below="@+id/scrollViewCustom"/>
+        android:text="Next step" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:fontFamily="@font/intersemibold"
+        android:text="Please select the lattice"
+        android:textColor="@color/black"
+        android:textSize="32sp" />
+
+    <Button
+        android:id="@+id/latticeCloseButton"
+        android:layout_width="44dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="357dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="13dp"
+        android:layout_toEndOf="@+id/textView2"
+        android:background="@drawable/ic_baseline_close_24"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
 
 </RelativeLayout>

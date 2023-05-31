@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".Fragment.DeliverScanFragment"
+    >
+
+    <ScrollView
+        android:layout_marginTop="50dp"
+        android:id="@+id/scrollViewCustomDeliver"
+        android:background="#FF0000"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TableLayout
+            android:id="@+id/customTableDeliver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            >
+
+            <TableRow>
+
+                <TextView
+                    android:layout_width="39dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="43dp"
+                    android:layout_weight="2"
+                    android:fontFamily="@font/intersemibold"
+                    android:gravity="center_horizontal"
+                    android:text="Cabinet\nnumber"
+                    android:textColor="@color/pantone_1925c_red"
+                    android:textSize="26sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:fontFamily="@font/intersemibold"
+                    android:gravity="center_horizontal"
+                    android:text="Tracking\nnumber"
+                    android:textColor="@color/pantone_1925c_red"
+                    android:textSize="26sp" />
+
+                <TextView
+                    android:layout_width="85dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginBottom="24dp"
+                    android:layout_weight="0"
+                    android:fontFamily="@font/intersemibold"
+                    android:gravity="center_horizontal"
+                    android:text="Cell phone\nnumber"
+                    android:textColor="@color/pantone_1925c_red"
+                    android:textSize="26sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="3"
+                    android:fontFamily="@font/intersemibold"
+                    android:gravity="center_horizontal"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="36sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="3"
+                    android:fontFamily="@font/intersemibold"
+                    android:gravity="center_horizontal"
+                    android:text=""
+                    android:textColor="@color/black"
+                    android:textSize="36sp"/>
+
+            </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="A32"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="50dp"
+                    android:fontFamily="@font/intersemibold"
+                    android:textSize="22sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="A32sadsd"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="100dp"
+                    android:fontFamily="@font/intersemibold"
+                    android:textSize="22sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+994503481507"
+                    android:textColor="@color/black"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/intersemibold"
+                    android:textSize="22sp"/>
+
+                <Button
+                    android:id="@+id/inventoryBtn"
+                    android:layout_width="120dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="30dp"
+                    android:background="@drawable/bordered_button_green"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Inventory"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/removeBtn"
+                    android:layout_width="120dp"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/bordered_button_red"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="Remove"
+                    android:textSize="16sp" />
+            </TableRow>
+
+        </TableLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

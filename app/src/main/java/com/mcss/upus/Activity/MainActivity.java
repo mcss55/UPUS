@@ -86,6 +86,9 @@ public class MainActivity extends AppCompatActivity {
                 errorMessageText.setVisibility(View.VISIBLE);
             } else if(userAccNumber.getText().length() != 0 || userPassword.getText().toString().length() != 0){
                 replaceFragment(new LatticeSelectionFragment());
+                userAccNumber.setText("");
+                userPassword.setText("");
+                dialog.dismiss();
 
 
             }else{

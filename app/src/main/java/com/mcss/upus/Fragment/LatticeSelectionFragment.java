@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,15 +22,31 @@ import androidx.fragment.app.Fragment;
 import com.mcss.upus.Activity.MainActivity;
 import com.mcss.upus.R;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class LatticeSelectionFragment extends Fragment implements View.OnClickListener {
     public LatticeSelectionFragment() {
+        buttonIncreaseList = new HashMap<>();
+        buttonDecreaseList = new HashMap<>();
+        textViewCountNumberList = new HashMap<>();
+        textViewTypeList = new HashMap<>();
+        textViewAvailableList = new HashMap<>();
     }
 
+
+    HashMap<Integer, Button> buttonIncreaseList;
+    HashMap<Integer, Button> buttonDecreaseList;
+    HashMap<Integer, TextView> textViewCountNumberList;
+    HashMap<Integer, TextView> textViewTypeList;
+    HashMap<Integer, TextView> textViewAvailableList;
+
     TableLayout tableLayout;
-    TextView textViewNumber;
-    Button buttonDecrease, buttonIncrease;
+
+
     private int number = 0;
 
     @Override
@@ -39,6 +56,8 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
     }
 
     private void addRowWithData(String data1, String data2) {
+        Button buttonDecrease, buttonIncrease;
+        TextView textViewNumber;
         // Create a new TableRow
         TableRow newRow = new TableRow(getActivity());
         // Create TextViews for each data item
@@ -51,12 +70,13 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         layoutParamstypeTxt.weight = 3;
         typeTextView.setLayoutParams(layoutParamstypeTxt);
         typeTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-        typeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP,30);
+        typeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
         typeTextView.setTextColor(getResources().getColor(R.color.black));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             typeTextView.setTypeface(Typeface.create(getResources().getFont(R.font.intermedium), Typeface.NORMAL));
         }
         typeTextView.setText(data1);
+        typeTextView.setId(View.generateViewId());
 
 
         // Available TextView
@@ -75,7 +95,7 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
             availableTextView.setTypeface(Typeface.create(getResources().getFont(R.font.intermedium), Typeface.NORMAL));
         }
         availableTextView.setText(data2);
-
+        availableTextView.setId(View.generateViewId());
 
         // increase/decrease button andtextview
         // Creating the Decrease Button
@@ -87,7 +107,7 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         buttonDecrease.setText("-");
         buttonDecrease.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
         buttonDecrease.setBackground(getResources().getDrawable(R.drawable.bordered_button_red));
-
+        buttonDecrease.setId(View.generateViewId());
 // Creating the TextView for the Number
         TableRow.LayoutParams layoutParamsNumberCountTxt = new TableRow.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.37f
@@ -102,7 +122,7 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         textViewNumber.setBackground(getResources().getDrawable(R.drawable.rounded_corner_textview));
         textViewNumber.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         textViewNumber.setGravity(Gravity.CENTER);
-
+        textViewNumber.setId(View.generateViewId());
 
         // Creating the Increase Button
         buttonIncrease = new Button(getActivity());
@@ -115,7 +135,7 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         buttonIncrease.setBackground(getResources().getDrawable(R.drawable.bordered_button_green));
         buttonIncrease.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
         buttonIncrease.setText("+");
-
+        buttonIncrease.setId(View.generateViewId());
 
         // Add the TextViews to the TableRow
         newRow.addView(typeTextView);
@@ -127,9 +147,23 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
 
         // Add the TableRow to the TableLayout
         tableLayout.addView(newRow);
+
+
+        buttonIncreaseList.put(buttonIncrease.getId(), buttonIncrease);
+        buttonDecreaseList.put(buttonDecrease.getId(), buttonDecrease);
+        textViewAvailableList.put(availableTextView.getId(), availableTextView);
+        textViewTypeList.put(typeTextView.getId(), typeTextView);
+        textViewCountNumberList.put(textViewNumber.getId(), textViewNumber);
+
+        buttonIncreaseList.forEach((id, button) -> button.setOnClickListener(this));
+        buttonDecreaseList.forEach((id, button)  -> button.setOnClickListener(this));
+        textViewAvailableList.forEach((id, textView)  -> textView.setOnClickListener(this));
+        textViewTypeList.forEach((id, textView)  -> textView.setOnClickListener(this));
+        textViewCountNumberList.forEach((id, textView) -> textView.setOnClickListener(this));
+
     }
 
-    private int pxToDp(int dp){
+    private int pxToDp(int dp) {
         return (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 dp,
@@ -147,52 +181,69 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
 //        buttonDecrease.setOnClickListener(this);
 //        buttonIncrease.setOnClickListener(this);
 
+        Button nextStepBtn = (Button) view.findViewById(R.id.nextStepBtn);
+        nextStepBtn.setOnClickListener(this);
+        Button latticeCloseButton = (Button) view.findViewById(R.id.latticeCloseButton);
         tableLayout = view.findViewById(R.id.customTable);
-
+        latticeCloseButton.setOnClickListener(this);
         addRowWithData("Small box", "10");
         addRowWithData("Small box", "2");
         addRowWithData("Small box", "13");
         addRowWithData("Small box", "17");
 
+        Log.d("BUTTON: ", nextStepBtn.getText().toString());
+
         return view;
     }
 
-    private void decreaseNumber() {
+    private void decreaseNumber(int id) {
         number--;
-        textViewNumber.setText(String.valueOf(number));
+        Objects.requireNonNull(textViewCountNumberList.get(id)).setText(String.valueOf(number));
     }
 
-    private int intToSp(int sp){
+    private int intToSp(int sp) {
         float scale = getResources().getDisplayMetrics().scaledDensity;
-        return  (int) (sp * scale);
+        return (int) (sp * scale);
     }
 
-    private void increaseNumber() {
+    private void increaseNumber(int id) {
         number++;
-        textViewNumber.setText(String.valueOf(number));
+        Objects.requireNonNull(textViewCountNumberList.get(id)).setText(String.valueOf(number));
     }
 
 
-    @SuppressLint("NonConstantResourceId")
+    @SuppressLint({"ResourceType", "NonConstantResourceId"})
     @Override
     public void onClick(View view) {
-//        switch (view.getId()) {
-//            case R.id.buttonDecrease:
-//                if (getAct() != null) {
-//                    decreaseNumber();
-//                }
-//                break;
-//            case R.id.buttonIncrease:
-//                if (getAct() != null) {
-//                    increaseNumber();
-//                }
-//                break;
-//            default:
-//                break;
-//        }
-    }
 
-    private MainActivity getAct() {
-        return (MainActivity) getActivity();
+        if (view.getId() == R.id.nextStepBtn) {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            if (mainActivity != null) {
+                mainActivity.replaceFragment(new DeliverScanFragment());
+            }
+            return;
+        }
+
+        if (view instanceof Button) {
+//            Log.d("CLICK BTN: ", ((Button) view).getText().toString());
+            if (((Button) view).getText().equals("+")){
+                TextView textViewCount = textViewCountNumberList.get(view.getId() - 1);
+                if (textViewCount != null) {
+                    int i = Integer.parseInt(textViewCount.getText().toString()) + 1;
+                    textViewCount.setText(String.valueOf(i));
+                }
+            }else if (((Button) view).getText().equals("-")){
+                TextView textViewCount = textViewCountNumberList.get(view.getId() + 1);
+                if (textViewCount != null && Integer.parseInt(textViewCount.getText().toString()) > 0) {
+                    int i = Integer.parseInt(textViewCount.getText().toString()) - 1;
+                    textViewCount.setText(String.valueOf(i));
+                }
+            }else if (!((Button) view).getText().toString().equals("Next step")){
+                MainActivity mainActivity=(MainActivity) getActivity();
+                 if(mainActivity != null){
+                     mainActivity.replaceFragment(new MainFragment());
+                 }
+            }
+        }
     }
 }
