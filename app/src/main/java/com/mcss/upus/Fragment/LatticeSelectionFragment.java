@@ -40,6 +40,7 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
 
     HashMap<Integer, Button> buttonIncreaseList;
     HashMap<Integer, Button> buttonDecreaseList;
+    //
     HashMap<Integer, TextView> textViewCountNumberList;
     HashMap<Integer, TextView> textViewTypeList;
     HashMap<Integer, TextView> textViewAvailableList;
