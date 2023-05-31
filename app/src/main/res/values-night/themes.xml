@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.UPUS" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/pantone_7672c_main_color</item>
+        <item name="colorPrimaryDark">@color/pantone_7672c_main_color_dark</item>
+        <item name="colorAccent">@color/pantone_3385c_turqoise</item>
+        <!-- Customize your theme here. -->
+    </style>
+</resources>

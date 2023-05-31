@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="pantone_1235c_yellow">#ffb81c</color>
+    <color name="pantone_1925c_red">#ee004e</color>
+    <color name="pantone_7672c_main_color">#2f2f6b</color>
+    <color name="pantone_7672c_main_color_dark">#352e5c</color>
+    <color name="pantone_3385c_turqoise">#03e9ba</color>
+    <color name="pantone_3385c_turqoise_dark">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>
