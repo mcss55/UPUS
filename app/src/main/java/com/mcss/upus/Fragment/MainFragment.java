@@ -33,12 +33,10 @@ public class MainFragment extends Fragment implements View.OnClickListener{
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         dropOffButton = (Button) view.findViewById(R.id.dropOffBtn);
         pickUpButton = (Button) view.findViewById(R.id.pickUpBtn);
-        registerButton = (Button) view.findViewById(R.id.registerBtn);
         helpButton = (Button) view.findViewById(R.id.helpBtn);
 
         dropOffButton.setOnClickListener(this);
         pickUpButton.setOnClickListener(this);
-        registerButton.setOnClickListener(this);
         helpButton.setOnClickListener(this);
 
         return view;
@@ -58,9 +56,6 @@ public class MainFragment extends Fragment implements View.OnClickListener{
                 if (getAct() != null){
                     getAct().replaceFragment(new PickUpFragment());
                 }
-                break;
-            case R.id.registerBtn:
-                Toast.makeText(getActivity(), "registerBtn", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.helpBtn:
                 Toast.makeText(getActivity(), "helpBtn", Toast.LENGTH_SHORT).show();

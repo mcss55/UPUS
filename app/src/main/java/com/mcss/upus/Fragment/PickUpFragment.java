@@ -16,7 +16,7 @@ import com.mcss.upus.R;
 
 public class PickUpFragment extends Fragment implements View.OnClickListener {
 
-    Button verifyCode, verifyFace, verifySwipe, verifyAccount, closeButton;
+    Button verifyCode, closeButton;
 
     public PickUpFragment() {
         // Required empty public constructor
@@ -31,16 +31,10 @@ public class PickUpFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pick_up, container, false);
         verifyCode = (Button) view.findViewById(R.id.verifyByCodeBtn);
-        verifyFace = (Button) view.findViewById(R.id.verifyByFace);
-        verifySwipe = (Button) view.findViewById(R.id.verifyBySwipe);
-        verifyAccount = (Button) view.findViewById(R.id.verifyByAcoount);
 
         closeButton = (Button) view.findViewById(R.id.pickUpCloseButton);
 
         verifyCode.setOnClickListener(this);
-        verifyFace.setOnClickListener(this);
-        verifySwipe.setOnClickListener(this);
-        verifyAccount.setOnClickListener(this);
 
         closeButton.setOnClickListener(this);
 
@@ -57,17 +51,6 @@ public class PickUpFragment extends Fragment implements View.OnClickListener {
             case R.id.verifyByCodeBtn:
                 if (getAct() != null){
                     getAct().replaceFragment(new PickUpVerificationCodeFragment());
-                }
-                break;
-            case R.id.verifyByFace:
-                Toast.makeText(getActivity(), "Coming soon...", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.verifyBySwipe:
-                Toast.makeText(getActivity(), "Coming soon...", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.verifyByAcoount:
-                if (getAct() != null){
-                    getAct().openLoginDialog();
                 }
                 break;
             case R.id.pickUpCloseButton:

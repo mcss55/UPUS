@@ -4,20 +4,17 @@
     android:layout_width="match_parent"
     android:id="@+id/latticeLayout"
     android:layout_height="wrap_content"
+    android:layout_marginTop="250dp"
     tools:context=".Fragment.LatticeSelectionFragment"
     android:paddingBottom="10dp"
     >
 
-
-
-
-
     <ScrollView
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="130dp"
         android:id="@+id/scrollViewCustom"
-        android:background="#FF0000"
+        android:scrollbarSize="200dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="400dp">
         <TableLayout
             android:id="@+id/customTable"
             android:layout_width="match_parent"
@@ -27,28 +24,29 @@
             <TableRow>
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:textAlignment="center"
+                    android:id="@+id/type"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/intersemibold"
-                    android:layout_marginEnd="43dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="3"
+
+                    android:layout_marginStart="45dp"
                     android:gravity="center_horizontal"
-                    android:text="Type"
+                    android:text="Növü"
                     android:textColor="@color/black"
-                    android:textSize="36sp" />
+                    android:textSize="58sp" />
+
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="4"
+                    android:layout_weight="1"
                     android:fontFamily="@font/intersemibold"
                     android:gravity="center_horizontal"
-                    android:padding="10sp"
-                    android:text="Available"
+                    android:layout_marginStart="100dp"
+                    android:text="Mövcüd"
                     android:textColor="@color/black"
-                    android:textSize="36sp" />
+                    android:textSize="58sp" />
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -59,7 +57,62 @@
                     android:text=""
                     android:textColor="@color/black"
                     android:textSize="42sp" />
+
             </TableRow>
+
+            <!--<TableRow android:paddingBottom="20dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="60dp"
+                    android:textAlignment="center"
+                    android:fontFamily="@font/intersemibold"
+                    android:gravity="center"
+                    android:text="Small box"
+                    android:textColor="@color/black"
+                    android:textSize="46sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="170dp"
+                    android:padding="20dp"
+                    android:fontFamily="@font/intersemibold"
+                    android:gravity="center"
+                    android:text="30"
+                    android:textColor="@color/black"
+                    android:textSize="46sp" />
+
+                <Button
+                    android:layout_marginTop="10dp"
+                    android:layout_width="172dp"
+                    android:paddingBottom="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="300dp"
+                    android:background="@drawable/bordered_button_red"
+                    android:text="-"
+                    android:textSize="90sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="30dp"
+                    android:background="@drawable/rounded_corner_textview"
+                    android:fontFamily="@font/intersemibold"
+                    android:gravity="center"
+                    android:layout_marginStart="20dp"
+                    android:text="100"
+                    android:textColor="@color/black"
+                    android:textSize="46sp" />
+                <Button
+                    android:layout_width="172dp"
+                    android:text="+"
+                    android:layout_marginTop="10dp"
+                    android:textSize="90sp"
+                    android:paddingBottom="10dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bordered_button_green"
+                    android:layout_marginStart="20dp"/>
+            </TableRow>-->
 
         </TableLayout>
 
@@ -67,17 +120,16 @@
 
     <Button
         android:id="@+id/nextStepBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="70dp"
+        android:layout_width="1101dp"
+        android:layout_height="198dp"
         android:layout_below="@+id/scrollViewCustom"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="184dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="216dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginStart="185dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="154dp"
         android:background="@drawable/bordered_button_green"
-        android:text="Next step" />
+        android:text="Növbəti addım"
+        android:textColor="@color/white"
+        android:textSize="60sp" />
 
     <TextView
         android:layout_marginTop="10dp"
@@ -88,20 +140,17 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="10dp"
         android:fontFamily="@font/intersemibold"
-        android:text="Please select the lattice"
+        android:text="Zəhmət olmasa rəf seçin"
         android:textColor="@color/black"
-        android:textSize="32sp" />
+        android:textSize="62sp" />
 
     <Button
         android:id="@+id/latticeCloseButton"
-        android:layout_width="44dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_width="107dp"
+        android:layout_height="107dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="357dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="13dp"
-        android:layout_toEndOf="@+id/textView2"
         android:background="@drawable/ic_baseline_close_24"
         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 

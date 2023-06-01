@@ -2,9 +2,11 @@ package com.mcss.upus.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -30,24 +32,46 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    private FrameLayout frameLayout;
     PackageReceiverSec packageReceiverSec;
-    Button closeBtn, loginButton, loginByOtherBtn;
-    TextView registerText, errorMessageText, date, time;
+    Button closeBtn, loginButton;
+    TextView errorMessageText, date, time;
     EditText userAccNumber, userPassword;
     ImageView settingsButton, mapLogoButton;
     Dialog dialog;
     private Handler handler;
     private Runnable updateTimeRunnable;
 
+    private static final long TOUCH_TIMEOUT = 3000; // 20 seconds in milliseconds
+    private Handler timeoutHandler;
+    private Runnable timeoutRunnable;
+    private void startTimeout() {
+        timeoutHandler = new Handler();
+        timeoutRunnable = () -> {
+            // Launch the custom activity after timeout
+            Intent intent = new Intent(MainActivity.this, SlideShow.class);
+            startActivity(intent);
+        };
 
-    @SuppressLint("SetTextI18n")
+        timeoutHandler.postDelayed(timeoutRunnable, TOUCH_TIMEOUT);
+    }
+
+    private void resetTimeout() {
+        timeoutHandler.removeCallbacks(timeoutRunnable);
+        timeoutHandler.postDelayed(timeoutRunnable, TOUCH_TIMEOUT);
+    }
+    @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        frameLayout = findViewById(R.id.frameLayout);
+        findViewById(android.R.id.content).setOnTouchListener((view, motionEvent) -> {
+            resetTimeout();
+            return false;
+        });
+
+        // Start the timeout countdown
+        startTimeout();
 
         settingsButton = (ImageView) findViewById(R.id.settingsBtn);
         mapLogoButton = (ImageView) findViewById(R.id.mapLogoBtn);
@@ -71,8 +95,6 @@ public class MainActivity extends AppCompatActivity {
         dialog.setCancelable(false);
 
         loginButton = dialog.findViewById(R.id.loginBtn);
-        loginByOtherBtn = dialog.findViewById(R.id.registerOtherWay);
-        registerText = dialog.findViewById(R.id.registerTxt);
         userAccNumber = dialog.findViewById(R.id.userAccountNumberEditText);
         errorMessageText = dialog.findViewById(R.id.errorMsgText);
         userPassword = dialog.findViewById(R.id.userAccountPasswordEditText);
@@ -81,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
         loginButton.setOnClickListener((view) -> {
             if (userAccNumber.getText().length() == 0 || userPassword.getText().toString().length() == 0) {
-                errorMessageText.setText("All fields must be filled!");
+                errorMessageText.setText("Məlumatları doldurun!");
                 errorMessageText.setTextColor(Color.parseColor("#ee004e"));
                 errorMessageText.setVisibility(View.VISIBLE);
             } else if(userAccNumber.getText().length() != 0 || userPassword.getText().toString().length() != 0){
@@ -94,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             }else{
                 errorMessageText.setVisibility(View.VISIBLE);
                 errorMessageText.setTextColor(Color.parseColor("#ee004e"));
-                errorMessageText.setText("Username or password incorrect!");
+                errorMessageText.setText("Hesab nömrəsi və ya şifrə yalnışdır!");
             }
         });
 
@@ -171,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         unregisterReceiver(packageReceiverSec);
         super.onDestroy();
+        timeoutHandler.removeCallbacks(timeoutRunnable);
     }
 
     public void openLoginDialog() {

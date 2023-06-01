@@ -57,21 +57,22 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
     }
 
     private void addRowWithData(String data1, String data2) {
+
         Button buttonDecrease, buttonIncrease;
         TextView textViewNumber;
-        // Create a new TableRow
         TableRow newRow = new TableRow(getActivity());
-        // Create TextViews for each data item
 
 
         // Type TextView
+        TableRow.LayoutParams layoutParamstypeTxt = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParamstypeTxt.setMarginStart(pxToDp(60));
+
         TextView typeTextView = new TextView(getActivity());
-        TableRow.LayoutParams layoutParamstypeTxt = new TableRow.LayoutParams(0,
-                ViewGroup.LayoutParams.WRAP_CONTENT, 3f);
-        layoutParamstypeTxt.weight = 3;
         typeTextView.setLayoutParams(layoutParamstypeTxt);
-        typeTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-        typeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+        typeTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        typeTextView.setGravity(Gravity.CENTER);
+        typeTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 46);
         typeTextView.setTextColor(getResources().getColor(R.color.black));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             typeTextView.setTypeface(Typeface.create(getResources().getFont(R.font.intermedium), Typeface.NORMAL));
@@ -82,15 +83,16 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
 
         // Available TextView
         TableRow.LayoutParams layoutParamsAvailableTxt = new TableRow.LayoutParams(
-                0,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                3f
+                ViewGroup.LayoutParams.WRAP_CONTENT
         );
+        layoutParamsAvailableTxt.setMarginStart(pxToDp(170));
+
         TextView availableTextView = new TextView(getActivity());
-        layoutParamstypeTxt.weight = 3;
+        availableTextView.setPadding(pxToDp(20), pxToDp(20), pxToDp(20), pxToDp(20));
         availableTextView.setLayoutParams(layoutParamsAvailableTxt);
-        availableTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-        availableTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+        availableTextView.setGravity(Gravity.CENTER);
+        availableTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 46);
         availableTextView.setTextColor(getResources().getColor(R.color.black));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             availableTextView.setTypeface(Typeface.create(getResources().getFont(R.font.intermedium), Typeface.NORMAL));
@@ -98,45 +100,64 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         availableTextView.setText(data2);
         availableTextView.setId(View.generateViewId());
 
-        // increase/decrease button andtextview
+
+
         // Creating the Decrease Button
+        TableRow.LayoutParams layoutParamsIncreaseBtn = new TableRow.LayoutParams(pxToDp(172), ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        layoutParamsIncreaseBtn.setMarginStart(pxToDp(300));
+        layoutParamsIncreaseBtn.topMargin = pxToDp(10);
 
         buttonDecrease = new Button(getActivity());
-//        buttonDecrease.setId(View.generateViewId());
-        buttonDecrease.setLayoutParams(new TableRow.LayoutParams(pxToDp(60), ViewGroup.LayoutParams.WRAP_CONTENT
-        ));
+        buttonDecrease.setPadding(0,0,0, pxToDp(10));
+        buttonDecrease.setLayoutParams(layoutParamsIncreaseBtn);
         buttonDecrease.setText("-");
-        buttonDecrease.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
+        buttonDecrease.setTextSize(TypedValue.COMPLEX_UNIT_SP, 90);
         buttonDecrease.setBackground(getResources().getDrawable(R.drawable.bordered_button_red));
         buttonDecrease.setId(View.generateViewId());
-// Creating the TextView for the Number
+
+
+
+
+        // Creating the TextView for the Count Number
         TableRow.LayoutParams layoutParamsNumberCountTxt = new TableRow.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 0.37f
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
         );
+        layoutParamsNumberCountTxt.setMarginStart(pxToDp(20));
 
         textViewNumber = new TextView(getActivity());
-//        textViewNumber.setId(View.generateViewId());
-        layoutParamsNumberCountTxt.setMarginStart(pxToDp(5));
-        layoutParamsNumberCountTxt.setMarginEnd(pxToDp(5));
+        textViewNumber.setPadding(pxToDp(30), pxToDp(30), pxToDp(30), pxToDp(30));
         textViewNumber.setLayoutParams(layoutParamsNumberCountTxt);
         textViewNumber.setText("0");
         textViewNumber.setBackground(getResources().getDrawable(R.drawable.rounded_corner_textview));
-        textViewNumber.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        textViewNumber.setTextSize(TypedValue.COMPLEX_UNIT_SP, 46);
         textViewNumber.setGravity(Gravity.CENTER);
         textViewNumber.setId(View.generateViewId());
 
+
+
+
+
+
         // Creating the Increase Button
-        buttonIncrease = new Button(getActivity());
         TableRow.LayoutParams layoutParamsBtnIncrease = new TableRow.LayoutParams(
-                pxToDp(60), ViewGroup.LayoutParams.WRAP_CONTENT
+                pxToDp(172), ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        layoutParamsBtnIncrease.setMarginEnd(pxToDp(30));
+        layoutParamsBtnIncrease.topMargin = pxToDp(10);
+        layoutParamsBtnIncrease.setMarginStart(pxToDp(20));
+
+        buttonIncrease = new Button(getActivity());
+        buttonIncrease.setPadding(0,0,0, pxToDp(10));
         buttonIncrease.setLayoutParams(layoutParamsBtnIncrease);
-//        buttonIncrease.setId(R.id.buttonIncrease);
         buttonIncrease.setBackground(getResources().getDrawable(R.drawable.bordered_button_green));
-        buttonIncrease.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
+        buttonIncrease.setTextSize(TypedValue.COMPLEX_UNIT_SP, 90);
         buttonIncrease.setText("+");
         buttonIncrease.setId(View.generateViewId());
+
+
+
+
+
 
         // Add the TextViews to the TableRow
         newRow.addView(typeTextView);
@@ -146,8 +167,12 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         newRow.addView(buttonIncrease);
 
 
+
+
         // Add the TableRow to the TableLayout
         tableLayout.addView(newRow);
+
+
 
 
         buttonIncreaseList.put(buttonIncrease.getId(), buttonIncrease);
@@ -161,6 +186,9 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         textViewAvailableList.forEach((id, textView)  -> textView.setOnClickListener(this));
         textViewTypeList.forEach((id, textView)  -> textView.setOnClickListener(this));
         textViewCountNumberList.forEach((id, textView) -> textView.setOnClickListener(this));
+
+
+
 
     }
 
@@ -190,6 +218,11 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         addRowWithData("Small box", "10");
         addRowWithData("Small box", "2");
         addRowWithData("Small box", "13");
+        addRowWithData("Small box", "17");
+        addRowWithData("Small box", "17");
+        addRowWithData("Small box", "17");
+        addRowWithData("Small box", "17");
+        addRowWithData("Small box", "17");
         addRowWithData("Small box", "17");
 
         Log.d("BUTTON: ", nextStepBtn.getText().toString());
