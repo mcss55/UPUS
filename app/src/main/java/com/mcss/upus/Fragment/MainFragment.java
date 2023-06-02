@@ -44,9 +44,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Shar
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), MainFragment.this, this.getView());
-        translatorUtils = new TranslatorUtils(getActivity());
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main, container, false);
         dropOffButton = (Button) view.findViewById(R.id.dropOffBtn);
@@ -56,7 +54,9 @@ public class MainFragment extends Fragment implements View.OnClickListener, Shar
         dropOffButton.setOnClickListener(this);
         pickUpButton.setOnClickListener(this);
         helpButton.setOnClickListener(this);
-
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        translatorUtils = new TranslatorUtils(getActivity());
+        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), MainFragment.this, view);
         return view;
 
     }

@@ -51,9 +51,6 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
 
     TableLayout tableLayout;
 
-
-    private int number = 0;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,9 +190,6 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), LatticeSelectionFragment.this, this.getView());
-        translatorUtils = new TranslatorUtils(getActivity());
 
 
         View view = inflater.inflate(R.layout.fragment_lattice_selection, container, false);
@@ -216,24 +210,13 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         addRowWithData("Small box", "17");
 
         Log.d("BUTTON: ", nextStepBtn.getText().toString());
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        translatorUtils = new TranslatorUtils(getActivity());
+        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), LatticeSelectionFragment.this, view);
 
         return view;
     }
 
-    private void decreaseNumber(int id) {
-        number--;
-        Objects.requireNonNull(textViewCountNumberList.get(id)).setText(String.valueOf(number));
-    }
-
-    private int intToSp(int sp) {
-        float scale = getResources().getDisplayMetrics().scaledDensity;
-        return (int) (sp * scale);
-    }
-
-    private void increaseNumber(int id) {
-        number++;
-        Objects.requireNonNull(textViewCountNumberList.get(id)).setText(String.valueOf(number));
-    }
 
 
     @SuppressLint({"ResourceType", "NonConstantResourceId"})

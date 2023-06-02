@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     PackageReceiverSec packageReceiverSec;
     Button closeBtn, loginButton, languageBtnAZ, languageBtnEN, languageBtnRU;
-    TextView errorMessageText, date, time;
+    TextView errorMessageText, date, time, loginHeader;
     EditText userAccNumber, userPassword;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
@@ -114,14 +114,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         // DB WORKS START
 
-
-
         dbHandler = new DBHandler(this);
 
         dbHandler.addDataToAZTable("countryName", "Azərbaycan");
         dbHandler.addDataToENTable("countryName", "Azerbaijan");
         dbHandler.addDataToRUTable("countryName", "Азербайджан");
-        // daxil ol, hesab nömrəsi, şifrə, giriş et
 
         dbHandler.addDataToAZTable("dropOffBtn", "Yerləşdir");
         dbHandler.addDataToENTable("dropOffBtn", "Drop off");
@@ -163,45 +160,47 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         dbHandler.addDataToENTable("verifyByCodeBtn", "Pick up by code");
         dbHandler.addDataToRUTable("verifyByCodeBtn", "Забрать по коду");
 
-        /*dbHandler.addDataToAZTable("login_dialog_header", "Giriş et");
-        dbHandler.addDataToENTable("login_dialog_header", "Login");
-        dbHandler.addDataToRUTable("login_dialog_header", "Войти");
+        dbHandler.addDataToAZTable("verifictaionFrHeader", "Kodu daxil edin");
+        dbHandler.addDataToENTable("verifictaionFrHeader", "Enter the code");
+        dbHandler.addDataToRUTable("verifictaionFrHeader", "Введите код");
 
-        dbHandler.addDataToAZTable("login_dialog_acc_number", "Hesab nömrəsi");
-        dbHandler.addDataToENTable("login_dialog_acc_number", "Account number");
-        dbHandler.addDataToRUTable("login_dialog_acc_number", "Номер аккаунта");
+        dbHandler.addDataToAZTable("numpadButtonDelete", "Təmizlə");
+        dbHandler.addDataToENTable("numpadButtonDelete", "Clear");
+        dbHandler.addDataToRUTable("numpadButtonDelete", "Очистить");
 
-        dbHandler.addDataToAZTable("login_dialog_password", "Şifrə");
-        dbHandler.addDataToENTable("login_dialog_password", "Password");
-        dbHandler.addDataToRUTable("login_dialog_password", "Пароль");
+        dbHandler.addDataToAZTable("numpadButtonSubmit", "Təsdiq et");
+        dbHandler.addDataToENTable("numpadButtonSubmit", "Submit");
+        dbHandler.addDataToRUTable("numpadButtonSubmit", "Подтвердить");
 
-        dbHandler.addDataToAZTable("login_dialog_button", "Daxil ol");
-        dbHandler.addDataToENTable("login_dialog_button", "Sign in");
-        dbHandler.addDataToRUTable("login_dialog_button", "Вход");
+        dbHandler.addDataToAZTable("loginHeader", "Giriş et");
+        dbHandler.addDataToENTable("loginHeader", "Login");
+        dbHandler.addDataToRUTable("loginHeader", "Войти");
+
+        dbHandler.addDataToAZTable("userAccountNumberEditText", "Hesab nömrəsi");
+        dbHandler.addDataToENTable("userAccountNumberEditText", "Account number");
+        dbHandler.addDataToRUTable("userAccountNumberEditText", "Номер аккаунта");
+
+        dbHandler.addDataToAZTable("userAccountPasswordEditText", "Şifrə");
+        dbHandler.addDataToENTable("userAccountPasswordEditText", "Password");
+        dbHandler.addDataToRUTable("userAccountPasswordEditText", "Пароль");
+
+/*        dbHandler.addDataToAZTable("errorMsgText", "Məlumatları doldurun!");
+        dbHandler.addDataToENTable("errorMsgText", "Fill in the information!");
+        dbHandler.addDataToRUTable("errorMsgText", "Заполните информацию!");
 
 
+        dbHandler.addDataToAZTable("errorMsgText", "Hesab nömrəsi və ya şifrə yalnışdır!");
+        dbHandler.addDataToENTable("errorMsgText", "The account number or password is incorrect!");
+        dbHandler.addDataToRUTable("errorMsgText", "Номер счета или пароль неверный!");*/
+
+        dbHandler.addDataToAZTable("loginBtn", "Daxil ol");
+        dbHandler.addDataToENTable("loginBtn", "Sign in");
+        dbHandler.addDataToRUTable("loginBtn", "Вход");
+
+        // DB WORKS END*
 
 
-        // please select pickup method, verify via pickup code
-
-
-
-        // kodu daxil edin, clear, tesdiq et
-
-        dbHandler.addDataToAZTable("fragment_pick_up_verification_code_header", "Kodu daxil edin");
-        dbHandler.addDataToENTable("fragment_pick_up_verification_code_header", "Enter the code");
-        dbHandler.addDataToRUTable("fragment_pick_up_verification_code_header", "Введите код");
-
-        dbHandler.addDataToAZTable("fragment_pick_up_verification_code_1_button", "Təmizlə");
-        dbHandler.addDataToENTable("fragment_pick_up_verification_code_1_button", "Clear");
-        dbHandler.addDataToRUTable("fragment_pick_up_verification_code_1_button", "Очистить");
-
-        dbHandler.addDataToAZTable("fragment_pick_up_verification_code_2_button", "Təsdiq et");
-        dbHandler.addDataToENTable("fragment_pick_up_verification_code_2_button", "Submit");
-        dbHandler.addDataToRUTable("fragment_pick_up_verification_code_2_button", "Подтвердить");
-
-        // DB WORKS END*/
-
+        translatorUtils.convertAllText(preferences.getString("lg",""), MainActivity.this);
 
 
         mainLayout = findViewById(R.id.mainLayout);
@@ -212,11 +211,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         // Start the timeout countdown
         startTimeout();
 
-        settingsButton = (ImageView) findViewById(R.id.settingsBtn);
-        mapLogoButton = (ImageView) findViewById(R.id.mapLogoBtn);
+        settingsButton = findViewById(R.id.settingsBtn);
+        mapLogoButton = findViewById(R.id.mapLogoBtn);
 
-        date = (TextView) findViewById(R.id.date);
-        time = (TextView) findViewById(R.id.time);
+        date = findViewById(R.id.date);
+        time = findViewById(R.id.time);
 
         handler = new Handler();
         updateTimeRunnable = new Runnable() {
@@ -237,6 +236,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             return false;
         });
 
+
+        loginHeader = dialog.findViewById(R.id.loginHeader);
         loginButton = dialog.findViewById(R.id.loginBtn);
         userAccNumber = dialog.findViewById(R.id.userAccountNumberEditText);
         errorMessageText = dialog.findViewById(R.id.errorMsgText);
@@ -270,9 +271,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             errorMessageText.setVisibility(View.GONE);
         });
 
-        closeBtn.setOnClickListener((view) -> {
-            dialog.dismiss();
-        });
+        closeBtn.setOnClickListener((view) -> dialog.dismiss());
+        translatorUtils.converDialogText(preferences.getString("lg",""),dialog);
 
         CommonActivityStyle.set(this);
 
@@ -374,6 +374,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         translatorUtils.convertAllText(sharedPreferences.getString("lg",""), this);
+        translatorUtils.converDialogText(sharedPreferences.getString("lg",""),dialog);
     }
 
     @Override

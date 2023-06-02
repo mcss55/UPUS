@@ -1,11 +1,13 @@
 package com.mcss.upus.Fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -19,13 +21,15 @@ import android.widget.ImageView;
 
 import com.mcss.upus.Activity.MainActivity;
 import com.mcss.upus.R;
+import com.mcss.upus.Util.TranslatorUtils;
 
 import java.util.Objects;
 
-public class PickUpVerificationCodeFragment extends Fragment implements View.OnClickListener {
+public class PickUpVerificationCodeFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private EditText[] boxes;
     private int currentBoxIndex;
+    TranslatorUtils translatorUtils;
 
     public PickUpVerificationCodeFragment() {
 
@@ -39,7 +43,12 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_pick_up_verification_code, container, false);
+        View view = inflater.inflate(R.layout.fragment_pick_up_verification_code, container, false);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        translatorUtils = new TranslatorUtils(getActivity());
+        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), PickUpVerificationCodeFragment.this, view);
+
+        return view;
     }
 
     @Override
@@ -165,5 +174,10 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
         }
         currentBoxIndex = 0;
 
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), PickUpVerificationCodeFragment.this, this.getView());
     }
 }

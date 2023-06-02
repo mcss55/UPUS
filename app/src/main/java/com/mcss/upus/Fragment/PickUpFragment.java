@@ -36,9 +36,6 @@ public class PickUpFragment extends Fragment implements View.OnClickListener, Sh
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), PickUpFragment.this, this.getView());
-        translatorUtils = new TranslatorUtils(getActivity());
 
         View view = inflater.inflate(R.layout.fragment_pick_up, container, false);
         verifyCode = (Button) view.findViewById(R.id.verifyByCodeBtn);
@@ -50,6 +47,9 @@ public class PickUpFragment extends Fragment implements View.OnClickListener, Sh
         closeButton.setOnClickListener(this);
 
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        translatorUtils = new TranslatorUtils(getActivity());
+        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), PickUpFragment.this, view);
 
         return view;
 
