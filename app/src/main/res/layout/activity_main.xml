@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white"
     android:layout_width="match_parent"
+    android:id="@+id/mainLayout"
     android:layout_height="match_parent"
     tools:context=".Activity.MainActivity">
 
@@ -85,7 +86,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/customActionBar"
         app:layout_constraintEnd_toStartOf="@+id/settingsBtn"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/userNameForActionBar"
+        app:layout_constraintStart_toEndOf="@+id/languageBtnRU"
         app:layout_constraintTop_toBottomOf="@+id/date" />
 
     <TextView
@@ -101,7 +102,7 @@
         app:layout_constraintBottom_toTopOf="@+id/time"
         app:layout_constraintEnd_toStartOf="@+id/settingsBtn"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/countryName"
+        app:layout_constraintStart_toEndOf="@+id/languageBtnRU"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -139,7 +140,7 @@
         android:layout_marginTop="37dp"
         android:layout_marginEnd="313dp"
         android:fontFamily="@font/intermedium"
-        android:text="Unlock Possibilities, Retrieve with Ease! ❤️"
+        android:text="Unlock Possibilities, Retrieve with Ease! ❤"
         android:textColor="@color/pantone_7672c_main_color_dark"
         android:textSize="40sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -149,6 +150,7 @@
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
+
         android:layout_height="1050dp"
         android:layout_marginTop="560dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -160,5 +162,53 @@
         app:layout_constraintVertical_bias="1.0">
 
     </FrameLayout>
+
+    <Button
+        android:id="@+id/languageBtnRU"
+        android:layout_width="150dp"
+        android:layout_height="121dp"
+        android:layout_marginStart="19dp"
+        android:background="#20FFFFFF"
+        android:drawableLeft="@drawable/russia"
+        android:fontFamily="@font/interbold"
+        android:paddingStart="10dp"
+        android:text="RU"
+        android:textColor="@color/white"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="@+id/customActionBar"
+        app:layout_constraintStart_toEndOf="@+id/languageBtnEN"
+        app:layout_constraintTop_toTopOf="@+id/customActionBar" />
+
+    <Button
+        android:id="@+id/languageBtnEN"
+        android:layout_width="150dp"
+        android:layout_height="121dp"
+        android:layout_marginStart="20dp"
+        android:background="#20FFFFFF"
+        android:drawableLeft="@drawable/united_kingdom"
+        android:fontFamily="@font/interbold"
+        android:paddingStart="10dp"
+        android:text="EN"
+        android:textColor="@color/white"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="@+id/customActionBar"
+        app:layout_constraintStart_toEndOf="@+id/languageBtnAZ"
+        app:layout_constraintTop_toTopOf="@+id/customActionBar" />
+
+    <Button
+        android:id="@+id/languageBtnAZ"
+        android:layout_width="150dp"
+        android:layout_height="121dp"
+        android:layout_marginStart="49dp"
+        android:background="#20FFFFFF"
+        android:drawableLeft="@drawable/azerbaijan"
+        android:fontFamily="@font/interbold"
+        android:paddingStart="10dp"
+        android:text="AZ"
+        android:textColor="@color/white"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="@+id/customActionBar"
+        app:layout_constraintStart_toEndOf="@+id/userNameForActionBar"
+        app:layout_constraintTop_toTopOf="@+id/customActionBar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

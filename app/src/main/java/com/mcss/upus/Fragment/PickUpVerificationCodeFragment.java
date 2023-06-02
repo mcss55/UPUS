@@ -20,6 +20,8 @@ import android.widget.ImageView;
 import com.mcss.upus.Activity.MainActivity;
 import com.mcss.upus.R;
 
+import java.util.Objects;
+
 public class PickUpVerificationCodeFragment extends Fragment implements View.OnClickListener {
 
     private EditText[] boxes;
@@ -107,11 +109,13 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
         button8.setOnClickListener(this::onNumpadButtonClick);
         button9.setOnClickListener(this::onNumpadButtonClick);
         button0.setOnClickListener(this::onNumpadButtonClick);
+        submitButton.setOnClickListener(this::onClick);
         clearButton.setOnClickListener(this::onClearButtonClick);
         closeBtn.setOnClickListener(this);
     }
 
     public void onNumpadButtonClick(View view) {
+        Objects.requireNonNull((MainActivity) getActivity()).resetTimeout();
         Button button = (Button) view;
         String buttonText = button.getText().toString();
 
@@ -138,7 +142,6 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
                 for (EditText box : boxes) {
                     s.append(box.getText().toString());
                 }
-                Log.d("MYTAG", "the code: " + s);
             }
         }
     }
@@ -146,6 +149,7 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
 
     @Override
     public void onClick(View view) {
+        Objects.requireNonNull((MainActivity) getActivity()).resetTimeout();
         if (view.getId() == R.id.closeButtonPickUpVfCode) {
             MainActivity activity = (MainActivity) getActivity();
             if (activity != null) {
@@ -155,6 +159,7 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
     }
 
     public void onClearButtonClick(View view) {
+        Objects.requireNonNull((MainActivity) getActivity()).resetTimeout();
         for (EditText box : boxes) {
             box.setText("");
         }

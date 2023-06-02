@@ -1,7 +1,9 @@
 package com.mcss.upus.Fragment;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +14,15 @@ import androidx.fragment.app.Fragment;
 
 import com.mcss.upus.Activity.MainActivity;
 import com.mcss.upus.R;
+import com.mcss.upus.Util.TranslatorUtils;
+
+import java.util.Objects;
 
 
-public class PickUpFragment extends Fragment implements View.OnClickListener {
+public class PickUpFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     Button verifyCode, closeButton;
+    TranslatorUtils translatorUtils;
 
     public PickUpFragment() {
         // Required empty public constructor
@@ -29,6 +35,11 @@ public class PickUpFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), PickUpFragment.this, this.getView());
+        translatorUtils = new TranslatorUtils(getActivity());
+
         View view = inflater.inflate(R.layout.fragment_pick_up, container, false);
         verifyCode = (Button) view.findViewById(R.id.verifyByCodeBtn);
 
@@ -47,6 +58,7 @@ public class PickUpFragment extends Fragment implements View.OnClickListener {
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
+        Objects.requireNonNull((MainActivity) getActivity()).resetTimeout();
         switch (view.getId()){
             case R.id.verifyByCodeBtn:
                 if (getAct() != null){
@@ -64,5 +76,10 @@ public class PickUpFragment extends Fragment implements View.OnClickListener {
     }
     private MainActivity getAct(){
         return (MainActivity) getActivity();
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), PickUpFragment.this, this.getView());
     }
 }

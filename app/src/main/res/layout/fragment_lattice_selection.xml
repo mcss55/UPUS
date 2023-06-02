@@ -26,11 +26,10 @@
                 <TextView
                     android:textAlignment="center"
                     android:id="@+id/type"
-                    android:layout_width="wrap_content"
+                    android:layout_width="180dp"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/intersemibold"
-
-                    android:layout_marginStart="45dp"
+                    android:layout_marginStart="20dp"
                     android:gravity="center_horizontal"
                     android:text="Növü"
                     android:textColor="@color/black"
@@ -38,13 +37,13 @@
 
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:id="@+id/available"
+                    android:layout_width="340dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:fontFamily="@font/intersemibold"
                     android:gravity="center_horizontal"
-                    android:layout_marginStart="100dp"
-                    android:text="Mövcüd"
+                    android:layout_marginStart="20dp"
+                    android:text="Mövcud"
                     android:textColor="@color/black"
                     android:textSize="58sp" />
                 <TextView
@@ -60,22 +59,22 @@
 
             </TableRow>
 
-            <!--<TableRow android:paddingBottom="20dp">
+           <!-- <TableRow android:paddingBottom="20dp">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="465dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="60dp"
                     android:textAlignment="center"
                     android:fontFamily="@font/intersemibold"
                     android:gravity="center"
-                    android:text="Small box"
+                    android:text="Balaca qutu"
                     android:textColor="@color/black"
                     android:textSize="46sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="170dp"
+                    android:layout_marginStart="30dp"
                     android:padding="20dp"
                     android:fontFamily="@font/intersemibold"
                     android:gravity="center"
@@ -88,12 +87,11 @@
                     android:layout_width="172dp"
                     android:paddingBottom="10dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="300dp"
                     android:background="@drawable/bordered_button_red"
                     android:text="-"
                     android:textSize="90sp" />
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="145dp"
                     android:layout_height="wrap_content"
                     android:padding="30dp"
                     android:background="@drawable/rounded_corner_textview"
@@ -134,7 +132,7 @@
     <TextView
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:id="@+id/textView2"
+        android:id="@+id/latticeHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"

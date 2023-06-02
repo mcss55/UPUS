@@ -41,6 +41,8 @@ public class SlideShow extends AppCompatActivity {
 
         imageSlider.setImageList(slideModelArrayList);
         imageSlider.setTouchListener(actionTypes -> {
+            Intent intent = new Intent(SlideShow.this,MainActivity.class);
+            this.startActivity(intent);
             finish();
         });
 
