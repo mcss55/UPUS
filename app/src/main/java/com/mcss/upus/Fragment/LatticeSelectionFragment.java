@@ -27,19 +27,24 @@ import com.mcss.upus.Util.TranslatorUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Scanner;
 
 public class LatticeSelectionFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
     TranslatorUtils translatorUtils;
+    public static List<Integer> ids;
+
     public LatticeSelectionFragment() {
+        ids = new ArrayList<>();
         buttonIncreaseList = new HashMap<>();
         buttonDecreaseList = new HashMap<>();
         textViewCountNumberList = new HashMap<>();
         textViewTypeList = new HashMap<>();
         textViewAvailableList = new HashMap<>();
     }
+
 
 
     HashMap<Integer, Button> buttonIncreaseList;
@@ -62,13 +67,15 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
 
         Button buttonDecrease, buttonIncrease;
         TextView textViewNumber;
+
         TableRow newRow = new TableRow(getActivity());
+        newRow.setPadding(0, 0, 0, pxToDp(20));
 
 
         // Type TextView
-        TableRow.LayoutParams layoutParamstypeTxt = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+        TableRow.LayoutParams layoutParamstypeTxt = new TableRow.LayoutParams(pxToDp(465),
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParamstypeTxt.setMarginStart(pxToDp(60));
+        layoutParamstypeTxt.setMarginStart(pxToDp(20));
 
         TextView typeTextView = new TextView(getActivity());
         typeTextView.setLayoutParams(layoutParamstypeTxt);
@@ -80,7 +87,8 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
             typeTextView.setTypeface(Typeface.create(getResources().getFont(R.font.intermedium), Typeface.NORMAL));
         }
         typeTextView.setText(data1);
-        typeTextView.setId(330011);
+        typeTextView.setId(View.generateViewId());
+        ids.add(typeTextView.getId());
 
 
         // Available TextView
@@ -88,10 +96,9 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        layoutParamsAvailableTxt.setMarginStart(pxToDp(170));
+        layoutParamsAvailableTxt.setMarginStart(pxToDp(200));
 
         TextView availableTextView = new TextView(getActivity());
-        availableTextView.setPadding(pxToDp(20), pxToDp(20), pxToDp(20), pxToDp(20));
         availableTextView.setLayoutParams(layoutParamsAvailableTxt);
         availableTextView.setGravity(Gravity.CENTER);
         availableTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 46);
@@ -106,7 +113,7 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         // Creating the Decrease Button
         TableRow.LayoutParams layoutParamsIncreaseBtn = new TableRow.LayoutParams(pxToDp(172), ViewGroup.LayoutParams.WRAP_CONTENT
         );
-        layoutParamsIncreaseBtn.setMarginStart(pxToDp(300));
+        layoutParamsIncreaseBtn.setMarginStart(pxToDp(150));
         layoutParamsIncreaseBtn.topMargin = pxToDp(10);
 
         buttonDecrease = new Button(getActivity());
@@ -120,7 +127,7 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
 
         // Creating the TextView for the Count Number
         TableRow.LayoutParams layoutParamsNumberCountTxt = new TableRow.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                pxToDp(145), ViewGroup.LayoutParams.WRAP_CONTENT
         );
         layoutParamsNumberCountTxt.setMarginStart(pxToDp(20));
 
@@ -189,14 +196,13 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
-
         View view = inflater.inflate(R.layout.fragment_lattice_selection, container, false);
 
-        Button nextStepBtn = (Button) view.findViewById(R.id.nextStepBtn);
+
+
+        Button nextStepBtn = view.findViewById(R.id.nextStepBtn);
         nextStepBtn.setOnClickListener(this);
-        Button latticeCloseButton = (Button) view.findViewById(R.id.latticeCloseButton);
+        Button latticeCloseButton = view.findViewById(R.id.latticeCloseButton);
         tableLayout = view.findViewById(R.id.customTable);
         latticeCloseButton.setOnClickListener(this);
         addRowWithData("Small box", "10");
@@ -209,14 +215,11 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         addRowWithData("Small box", "17");
         addRowWithData("Small box", "17");
 
-        Log.d("BUTTON: ", nextStepBtn.getText().toString());
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         translatorUtils = new TranslatorUtils(getActivity());
-        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), LatticeSelectionFragment.this, view);
-
+        translatorUtils.convertAllText(sharedPreferences.getString("lg", ""), LatticeSelectionFragment.this, view);
         return view;
     }
-
 
 
     @SuppressLint({"ResourceType", "NonConstantResourceId"})
@@ -234,7 +237,6 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         }
 
         if (view instanceof Button) {
-//            Log.d("CLICK BTN: ", ((Button) view).getText().toString());
             if (((Button) view).getText().equals("+")) {
                 TextView textViewCount = textViewCountNumberList.get(view.getId() - 1);
                 if (textViewCount != null) {

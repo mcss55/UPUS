@@ -107,6 +107,7 @@
         android:text="Hesab nömrəsi və ya şifrə yalnışdır!"
         android:textColor="@color/pantone_1925c_red"
         android:visibility="gone"
+        android:textSize="50sp"
         app:layout_constraintBottom_toTopOf="@+id/userAccountNumberEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

@@ -9,10 +9,11 @@
     android:paddingBottom="10dp"
     >
 
+
     <ScrollView
-        android:layout_marginTop="130dp"
         android:id="@+id/scrollViewCustom"
         android:scrollbarSize="200dp"
+        android:layout_marginTop="200dp"
         android:layout_width="match_parent"
         android:layout_height="400dp">
         <TableLayout
@@ -21,61 +22,25 @@
             android:layout_height="wrap_content"
             android:background="@color/white">
 
-            <TableRow>
-
-                <TextView
-                    android:textAlignment="center"
-                    android:id="@+id/type"
-                    android:layout_width="180dp"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/intersemibold"
-                    android:layout_marginStart="20dp"
-                    android:gravity="center_horizontal"
-                    android:text="Növü"
-                    android:textColor="@color/black"
-                    android:textSize="58sp" />
 
 
-                <TextView
-                    android:id="@+id/available"
-                    android:layout_width="340dp"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/intersemibold"
-                    android:gravity="center_horizontal"
-                    android:layout_marginStart="20dp"
-                    android:text="Mövcud"
-                    android:textColor="@color/black"
-                    android:textSize="58sp" />
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="3"
-                    android:fontFamily="@font/intersemibold"
-                    android:gravity="center_horizontal"
-                    android:text=""
-                    android:textColor="@color/black"
-                    android:textSize="42sp" />
-
-            </TableRow>
 
            <!-- <TableRow android:paddingBottom="20dp">
                 <TextView
                     android:layout_width="465dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="60dp"
+                    android:layout_marginStart="20dp"
                     android:textAlignment="center"
                     android:fontFamily="@font/intersemibold"
                     android:gravity="center"
-                    android:text="Balaca qutu"
+                    android:text="Маленькая коробка"
                     android:textColor="@color/black"
                     android:textSize="46sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="30dp"
-                    android:padding="20dp"
+                    android:layout_marginStart="200dp"
                     android:fontFamily="@font/intersemibold"
                     android:gravity="center"
                     android:text="30"
@@ -86,6 +51,7 @@
                     android:layout_marginTop="10dp"
                     android:layout_width="172dp"
                     android:paddingBottom="10dp"
+                    android:layout_marginStart="150dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bordered_button_red"
                     android:text="-"
@@ -131,14 +97,14 @@
 
     <TextView
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         android:id="@+id/latticeHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         android:layout_alignParentStart="true"
         android:layout_marginStart="10dp"
         android:fontFamily="@font/intersemibold"
-        android:text="Zəhmət olmasa rəf seçin"
+        android:text="Пожалуйста, выберите полку"
         android:textColor="@color/black"
         android:textSize="62sp" />
 
@@ -152,5 +118,33 @@
         android:background="@drawable/ic_baseline_close_24"
         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
+    <TextView
+        android:id="@+id/type"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"
+        android:layout_below="@+id/latticeHeader"
+        android:layout_width="180dp"
+        android:layout_alignParentStart="true"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/intersemibold"
+        android:layout_marginStart="150dp"
+        android:gravity="center_horizontal"
+        android:text="Тип"
+        android:textColor="@color/black"
+        android:textSize="58sp" />
 
+
+    <TextView
+        android:id="@+id/available"
+        android:layout_width="340dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/latticeHeader"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="550dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/intersemibold"
+        android:gravity="center_horizontal"
+        android:text="Доступный"
+        android:textColor="@color/black"
+        android:textSize="58sp" />
 </RelativeLayout>

@@ -95,18 +95,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         editor = preferences.edit();
 
         languageBtnAZ.setOnClickListener(view -> {
-            Log.d(TAG, "onCreate: az");
             editor.putString("lg","AZ");
             editor.apply();
         });
-
         languageBtnEN.setOnClickListener(view -> {
-            Log.d(TAG, "onCreate: en");
             editor.putString("lg","EN");
             editor.apply();
         });
         languageBtnRU.setOnClickListener(view -> {
-            Log.d(TAG, "onCreate: ru");
             editor.putString("lg","RU");
             editor.apply();
         });
@@ -116,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         dbHandler = new DBHandler(this);
 
-        dbHandler.addDataToAZTable("countryName", "Azərbaycan");
+        /*dbHandler.addDataToAZTable("countryName", "Azərbaycan");
         dbHandler.addDataToENTable("countryName", "Azerbaijan");
         dbHandler.addDataToRUTable("countryName", "Азербайджан");
 
@@ -184,7 +180,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         dbHandler.addDataToENTable("userAccountPasswordEditText", "Password");
         dbHandler.addDataToRUTable("userAccountPasswordEditText", "Пароль");
 
-/*        dbHandler.addDataToAZTable("errorMsgText", "Məlumatları doldurun!");
+*/
+        /*        dbHandler.addDataToAZTable("errorMsgText", "Məlumatları doldurun!");
         dbHandler.addDataToENTable("errorMsgText", "Fill in the information!");
         dbHandler.addDataToRUTable("errorMsgText", "Заполните информацию!");
 
@@ -192,15 +189,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         dbHandler.addDataToAZTable("errorMsgText", "Hesab nömrəsi və ya şifrə yalnışdır!");
         dbHandler.addDataToENTable("errorMsgText", "The account number or password is incorrect!");
         dbHandler.addDataToRUTable("errorMsgText", "Номер счета или пароль неверный!");*/
+        /*
 
         dbHandler.addDataToAZTable("loginBtn", "Daxil ol");
         dbHandler.addDataToENTable("loginBtn", "Sign in");
         dbHandler.addDataToRUTable("loginBtn", "Вход");
-
+*/
         // DB WORKS END*
 
 
-        translatorUtils.convertAllText(preferences.getString("lg",""), MainActivity.this);
 
 
         mainLayout = findViewById(R.id.mainLayout);
@@ -247,7 +244,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         loginButton.setOnClickListener((view) -> {
             if (userAccNumber.getText().length() == 0 || userPassword.getText().toString().length() == 0) {
-                errorMessageText.setText("Məlumatları doldurun!");
+
+                switch (preferences.getString("lg","")) {
+                    case "AZ":
+                        errorMessageText.setText("Məlumatları doldurun!");
+                        break;
+                    case "EN":
+                        errorMessageText.setText("Fill in the information!");
+                        break;
+                    case "RU":
+                        errorMessageText.setText("Заполните информацию!");
+                }
                 errorMessageText.setTextColor(Color.parseColor("#ee004e"));
                 errorMessageText.setVisibility(View.VISIBLE);
             } else if (userAccNumber.getText().length() != 0 || userPassword.getText().toString().length() != 0) {
@@ -261,7 +268,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             } else {
                 errorMessageText.setVisibility(View.VISIBLE);
                 errorMessageText.setTextColor(Color.parseColor("#ee004e"));
-                errorMessageText.setText("Hesab nömrəsi və ya şifrə yalnışdır!");
+                switch (preferences.getString("lg","")) {
+                    case "AZ":
+                        errorMessageText.setText("Hesab nömrəsi və ya şifrə yalnışdır!");
+                        break;
+                    case "EN":
+                        errorMessageText.setText("The account number or password is incorrect!");
+                        break;
+                    case "RU":
+                        errorMessageText.setText("Номер счета или пароль неверный!");
+                }
+
             }
         });
 
@@ -273,6 +290,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         closeBtn.setOnClickListener((view) -> dialog.dismiss());
         translatorUtils.converDialogText(preferences.getString("lg",""),dialog);
+        translatorUtils.convertAllText(preferences.getString("lg",""), MainActivity.this);
 
         CommonActivityStyle.set(this);
 
@@ -352,23 +370,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 .replace(R.id.frameLayout, fragment)
                 .commit();
     }
-
-    /*private void convertAllText(String lang, AppCompatActivity activity){
-        HashMap<String, String> data = dbHandler.readAllData(lang);
-        Resources resources = activity.getResources();
-        data.forEach((key, value) -> {
-            int resourceId = resources.getIdentifier(key,"id",activity.getPackageName());
-            if (resourceId != 0){
-                View viewById = activity.findViewById(resourceId);
-                if (viewById instanceof TextView) {
-                    ((TextView) viewById).setText(value);
-                }
-                if (viewById instanceof Button) {
-                    ((Button) viewById).setText(value);
-                }
-            }
-        });
-    }*/
 
 
     @Override
