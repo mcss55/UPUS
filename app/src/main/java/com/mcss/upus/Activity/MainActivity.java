@@ -94,6 +94,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
 
+        editor.putString("lg","AZ");
+        editor.apply();
+
         languageBtnAZ.setOnClickListener(view -> {
             editor.putString("lg","AZ");
             editor.apply();
@@ -109,10 +112,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
 
         // DB WORKS START
+/*
 
         dbHandler = new DBHandler(this);
 
-        /*dbHandler.addDataToAZTable("countryName", "Azərbaycan");
+        dbHandler.addDataToAZTable("countryName", "Azərbaycan");
         dbHandler.addDataToENTable("countryName", "Azerbaijan");
         dbHandler.addDataToRUTable("countryName", "Азербайджан");
 
@@ -140,9 +144,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         dbHandler.addDataToENTable("available", "Available");
         dbHandler.addDataToRUTable("available", "Доступный");
 
-        dbHandler.addDataToAZTable("330011", "Balaca qutu");
-        dbHandler.addDataToENTable("330011", "Small box");
-        dbHandler.addDataToRUTable("330011", "Маленькая коробка");
+        dbHandler.addDataToAZTable("boxTxtSmall", "Balaca qutu");
+        dbHandler.addDataToENTable("boxTxtSmall", "Small box");
+        dbHandler.addDataToRUTable("boxTxtSmall", "Маленькая коробка");
+
+        dbHandler.addDataToAZTable("boxTxtMedium", "Medium qutu");
+        dbHandler.addDataToENTable("boxTxtMedium", "Medium box");
+        dbHandler.addDataToRUTable("boxTxtMedium", "Средняя коробка");
+
+        dbHandler.addDataToAZTable("boxTxtLarge", "Böyük qutu");
+        dbHandler.addDataToENTable("boxTxtLarge", "Large box");
+        dbHandler.addDataToRUTable("boxTxtLarge", "Большая коробка");
 
         dbHandler.addDataToAZTable("nextStepBtn", "Növbəti addım");
         dbHandler.addDataToENTable("nextStepBtn", "Next step");
@@ -180,21 +192,22 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         dbHandler.addDataToENTable("userAccountPasswordEditText", "Password");
         dbHandler.addDataToRUTable("userAccountPasswordEditText", "Пароль");
 
-*/
-        /*        dbHandler.addDataToAZTable("errorMsgText", "Məlumatları doldurun!");
+
+        dbHandler.addDataToAZTable("errorMsgText", "Məlumatları doldurun!");
         dbHandler.addDataToENTable("errorMsgText", "Fill in the information!");
         dbHandler.addDataToRUTable("errorMsgText", "Заполните информацию!");
 
 
         dbHandler.addDataToAZTable("errorMsgText", "Hesab nömrəsi və ya şifrə yalnışdır!");
         dbHandler.addDataToENTable("errorMsgText", "The account number or password is incorrect!");
-        dbHandler.addDataToRUTable("errorMsgText", "Номер счета или пароль неверный!");*/
-        /*
+        dbHandler.addDataToRUTable("errorMsgText", "Номер счета или пароль неверный!");
+
 
         dbHandler.addDataToAZTable("loginBtn", "Daxil ol");
         dbHandler.addDataToENTable("loginBtn", "Sign in");
         dbHandler.addDataToRUTable("loginBtn", "Вход");
 */
+
         // DB WORKS END*
 
 

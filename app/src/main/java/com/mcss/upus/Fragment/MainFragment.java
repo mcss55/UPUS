@@ -93,6 +93,7 @@ public class MainFragment extends Fragment implements View.OnClickListener, Shar
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+        Log.d("mainTag", "onSharedPreferenceChanged: mainfragment: "+sharedPreferences);
         translatorUtils.convertAllText(sharedPreferences.getString("lg",""), MainFragment.this, this.getView());
     }
 }
