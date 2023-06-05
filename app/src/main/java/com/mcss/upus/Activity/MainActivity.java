@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private Handler handler;
     private Runnable updateTimeRunnable;
 
-    private final long TOUCH_TIMEOUT = 3000; // 120 seconds in milliseconds
+    private final long TOUCH_TIMEOUT = 12000; // 120 seconds in milliseconds
     private Handler timeoutHandler;
     public  ConstraintLayout mainLayout;
     private Runnable timeoutRunnable;

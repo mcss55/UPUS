@@ -24,7 +24,7 @@ import com.mcss.upus.Util.TranslatorUtils;
 
 public class DeliverScanFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
     TextView cabinetNumber, trackingNumber, cellPhoneNumber;
-    Button btbInverntory, btnRemove;
+    Button btnInverntory, btnRemove;
     TableLayout tableLayout;
     SharedPreferences sharedPreferences;
     TranslatorUtils translatorUtils;
@@ -93,18 +93,19 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
 
         // Button Inventory
 
-        btbInverntory = new Button(getActivity());
-        btbInverntory.setId(View.generateViewId());
-        btbInverntory.setLayoutParams(new TableRow.LayoutParams(pxToDp(192), pxToDp(85)));
-        btbInverntory.setText("Inventory");
-        btbInverntory.setTextColor(Color.WHITE);
-        btbInverntory.setTextSize(TypedValue.COMPLEX_UNIT_SP, 31);
-        btbInverntory.setBackgroundResource(R.drawable.bordered_button_green);
-        btbInverntory.setPadding(pxToDp(10), 0, pxToDp(10), 0);
-        TableRow.LayoutParams layoutParams4 = (TableRow.LayoutParams) btbInverntory.getLayoutParams();
+        btnInverntory = new Button(getActivity());
+        btnInverntory.setId(View.generateViewId());
+        btnInverntory.setLayoutParams(new TableRow.LayoutParams(pxToDp(192), pxToDp(85)));
+        btnInverntory.setText("Inventory");
+        btnInverntory.setTextColor(Color.WHITE);
+        btnInverntory.setTextSize(TypedValue.COMPLEX_UNIT_SP, 31);
+        btnInverntory.setBackgroundResource(R.drawable.bordered_button_green);
+        btnInverntory.setPadding(pxToDp(10), 0, pxToDp(10), 0);
+        TableRow.LayoutParams layoutParams4 = (TableRow.LayoutParams) btnInverntory.getLayoutParams();
         layoutParams4.setMarginStart(pxToDp(20));
         layoutParams4.bottomMargin =pxToDp(10);
-        btbInverntory.setLayoutParams(layoutParams4);
+        btnInverntory.setLayoutParams(layoutParams4);
+        btnInverntory.setOnClickListener(this);
 
         // Button Remove
 
@@ -120,12 +121,13 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
         layoutParams5.setMarginStart(pxToDp(10));
         layoutParams5.setMarginEnd(pxToDp(10));
         btnRemove.setLayoutParams(layoutParams5);
+        btnRemove.setOnClickListener(this);
 
         // Add views to table row
         tableRow.addView(cabinetNumber);
         tableRow.addView(trackingNumber);
         tableRow.addView(cellPhoneNumber);
-        tableRow.addView(btbInverntory);
+        tableRow.addView(btnInverntory);
         tableRow.addView(btnRemove);
 
         // Add table row to table layout
@@ -176,6 +178,8 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
+
+        System.out.println(view.getId());
 
     }
 }

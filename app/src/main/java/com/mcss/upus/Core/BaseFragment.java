@@ -1,6 +1,5 @@
 package com.mcss.upus.Core;
 
-
 import android.content.Intent;
 import android.os.Handler;
 import android.view.MotionEvent;
@@ -9,6 +8,7 @@ import android.view.View;
 import androidx.fragment.app.Fragment;
 
 import com.mcss.upus.Activity.SlideShow;
+
 
 public abstract class BaseFragment extends Fragment {
 
@@ -58,4 +58,3 @@ public abstract class BaseFragment extends Fragment {
     }
 
 }
-

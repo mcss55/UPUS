@@ -6,12 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".Activity.SlideShow">
 
-        <com.denzcoskun.imageslider.ImageSlider
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:iss_period="2000"
-            app:iss_auto_cycle="true"
-            app:iss_delay="2000"
-            android:id="@+id/imageSlider"/>
+        <!--        <com.denzcoskun.imageslider.ImageSlider-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            app:iss_period="2000"-->
+        <!--            app:iss_auto_cycle="true"-->
+        <!--            app:iss_delay="2000"-->
+        <!--            android:id="@+id/imageSlider"/>-->
 
+        <com.mcss.upus.CustomSlider.CustomImageSlider
+            android:id="@+id/imageSlider"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
