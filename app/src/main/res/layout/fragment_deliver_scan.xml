@@ -19,70 +19,65 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             >
+                <!--<TableRow>
 
-<!--                Kabinet nömrəsi-->
-<!--                Номер кабинета-->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="120dp"
+                        android:fontFamily="@font/intersemibold"
+                        android:text="A300"
+                        android:textColor="@color/black"
+                        android:textSize="34sp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="A32sadsd"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="240dp"
+                        android:fontFamily="@font/intersemibold"
+                        android:textSize="34sp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+994503481507"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="100dp"
+                        android:fontFamily="@font/intersemibold"
+                        android:textSize="34sp"/>
 
+                    <Button
+                        android:id="@+id/inventoryBtn"
+                        android:layout_width="192dp"
+                        android:layout_height="85dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/bordered_button_green"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:text="Inventory"
+                        android:textColor="@color/white"
+                        android:textSize="31sp" />
 
-            <TableRow>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="120dp"
-                    android:fontFamily="@font/intersemibold"
-                    android:text="A300"
-                    android:textColor="@color/black"
-                    android:textSize="34sp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="A32sadsd"
-                    android:textColor="@color/black"
-                    android:layout_marginStart="240dp"
-                    android:fontFamily="@font/intersemibold"
-                    android:textSize="34sp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="+994503481507"
-                    android:textColor="@color/black"
-                    android:layout_marginStart="100dp"
-                    android:fontFamily="@font/intersemibold"
-                    android:textSize="34sp"/>
-
-                <Button
-                    android:id="@+id/inventoryBtn"
-                    android:layout_width="192dp"
-                    android:layout_height="85dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/bordered_button_green"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:text="Inventory"
-                    android:textColor="@color/white"
-                    android:textSize="31sp" />
-
-                <Button
-                    android:id="@+id/removeBtn"
-                    android:layout_width="192dp"
-                    android:layout_height="85dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/bordered_button_red"
-                    android:paddingStart="10dp"
-                    android:textColor="@color/white"
-                    android:paddingEnd="10dp"
-                    android:text="Remove"
-                    android:textSize="31sp" />
-            </TableRow>
-
+                    <Button
+                        android:id="@+id/removeBtn"
+                        android:layout_width="192dp"
+                        android:layout_height="85dp"
+                        android:layout_marginStart="10dp"
+                        android:background="@drawable/bordered_button_red"
+                        android:paddingStart="10dp"
+                        android:textColor="@color/white"
+                        android:paddingEnd="10dp"
+                        android:text="Remove"
+                        android:textSize="31sp" />
+                </TableRow>
+-->
         </TableLayout>
 
     </ScrollView>
 
     <TextView
+        android:id="@+id/cabinetNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/deliverHeader"
@@ -91,18 +86,19 @@
         android:layout_marginTop="20dp"
         android:fontFamily="@font/intersemibold"
         android:gravity="center_horizontal"
-        android:text="Номер кабинета"
+        android:text="Cabinet number"
         android:textColor="@color/pantone_1925c_red"
         android:textSize="38sp" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/trackingNumber"
+        android:layout_width="430dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginStart="21dp"
         android:layout_marginTop="123dp"
-        android:layout_marginEnd="45dp"
-        android:layout_toStartOf="@+id/cellNuymber"
+        android:layout_marginEnd="0dp"
+        android:layout_toStartOf="@+id/cellPhoneNumber"
         android:fontFamily="@font/intersemibold"
         android:gravity="center_horizontal"
         android:text="Tracking number"
@@ -110,14 +106,13 @@
         android:textSize="38sp" />
 
     <TextView
-        android:id="@+id/cellNuymber"
+        android:id="@+id/cellPhoneNumber"
         android:layout_width="243dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="1dp"
         android:layout_marginTop="120dp"
-        android:layout_marginEnd="458dp"
+        android:layout_marginEnd="438dp"
         android:layout_marginBottom="24dp"
         android:layout_weight="0"
         android:fontFamily="@font/intersemibold"
@@ -136,7 +131,7 @@
         android:fontFamily="@font/interbold"
         android:layout_alignParentLeft="true"
         android:textSize="64sp"
-        android:text="Doing process for delivery" />
+        android:text="Finish up to drop off" />
 
     <ImageView
         android:id="@+id/imageView"

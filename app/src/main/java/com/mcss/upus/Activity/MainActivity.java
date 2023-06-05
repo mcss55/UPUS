@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private Handler handler;
     private Runnable updateTimeRunnable;
 
-    private final long TOUCH_TIMEOUT = 120000; // 120 seconds in milliseconds
+    private final long TOUCH_TIMEOUT = 3000; // 120 seconds in milliseconds
     private Handler timeoutHandler;
     public  ConstraintLayout mainLayout;
     private Runnable timeoutRunnable;
@@ -207,6 +207,26 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         dbHandler.addDataToENTable("loginBtn", "Sign in");
         dbHandler.addDataToRUTable("loginBtn", "Вход");
 */
+
+       /* dbHandler = new DBHandler(this);
+
+        dbHandler.addDataToAZTable("deliverHeader", "Yerləşdirmək üçün tamamlayın");
+        dbHandler.addDataToENTable("deliverHeader", "Finish up to drop off");
+        dbHandler.addDataToRUTable("deliverHeader", "Завершить, чтобы класть");
+
+        dbHandler.addDataToAZTable("cabinetNumber", "Kabinet nömrəsi");
+        dbHandler.addDataToENTable("cabinetNumber", "Cabinet number");
+        dbHandler.addDataToRUTable("cabinetNumber", "Номер кабинета");
+
+        dbHandler.addDataToAZTable("trackingNumber", "İzləmə nömrəsi");
+        dbHandler.addDataToENTable("trackingNumber", "Tracking number");
+        dbHandler.addDataToRUTable("trackingNumber", "Идентификационный номер");
+
+        dbHandler.addDataToAZTable("cellPhoneNumber", "Telefon nömrəsi");
+        dbHandler.addDataToENTable("cellPhoneNumber", "Cell phone number");
+        dbHandler.addDataToRUTable("cellPhoneNumber", "Номер телефона");*/
+
+
 
         // DB WORKS END*
 
