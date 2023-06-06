@@ -8,9 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.preference.PreferenceManager;
-import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,18 +16,35 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mcss.upus.Activity.MainActivity;
+import com.mcss.upus.Model.PickUpResponse;
 import com.mcss.upus.R;
+import com.mcss.upus.Repository.PickUpRepository;
+import com.mcss.upus.Repository.SearchRepo;
 import com.mcss.upus.Util.TranslatorUtils;
 
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PickUpVerificationCodeFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private EditText[] boxes;
     private int currentBoxIndex;
+    private Retrofit retrofit;
+    final String TAG = "verify code";
+    PickUpRepository pickUpRepository;
+    SharedPreferences sharedPreferences;
     TranslatorUtils translatorUtils;
+    final String BASE_URL = "https://flysistem.flyex.az/api/";
 
     public PickUpVerificationCodeFragment() {
 
@@ -43,8 +58,16 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Gson gson = new GsonBuilder().setLenient().create();
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        pickUpRepository = retrofit.create(PickUpRepository.class);
+
         View view = inflater.inflate(R.layout.fragment_pick_up_verification_code, container, false);
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         translatorUtils = new TranslatorUtils(getActivity());
         translatorUtils.convertAllText(sharedPreferences.getString("lg",""), PickUpVerificationCodeFragment.this, view);
 
@@ -118,10 +141,12 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
         button8.setOnClickListener(this::onNumpadButtonClick);
         button9.setOnClickListener(this::onNumpadButtonClick);
         button0.setOnClickListener(this::onNumpadButtonClick);
-        submitButton.setOnClickListener(this::onClick);
+        submitButton.setOnClickListener(this);
         clearButton.setOnClickListener(this::onClearButtonClick);
         closeBtn.setOnClickListener(this);
     }
+
+
 
     public void onNumpadButtonClick(View view) {
         Objects.requireNonNull((MainActivity) getActivity()).resetTimeout();
@@ -164,6 +189,80 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
             if (activity != null) {
                 activity.replaceFragment(new MainFragment());
             }
+        }else if (view.getId() == R.id.numpadButtonSubmit){
+            boolean allFieldsFull = true;
+            for (EditText box : boxes) {
+                if (box.getText().toString().isEmpty())
+                    allFieldsFull = false;
+            }
+            if (allFieldsFull){
+                System.out.println("All fields is: "+allFieldsFull);
+                StringBuilder password = new StringBuilder();
+                for (EditText box : boxes) {
+                    password.append(box.getText().toString());
+                }
+                System.out.println("pass: "+password);
+                openLattice(password.toString());
+            }else{
+                System.out.println("All fields is: "+allFieldsFull);
+            }
+        }
+    }
+
+    private void openLattice(String password) {
+
+        Call<PickUpResponse> call = pickUpRepository.getPickUpDetails(password);
+
+        call.enqueue(new Callback<PickUpResponse>() {
+            @Override
+            public void onResponse(Call<PickUpResponse> call, Response<PickUpResponse> response) {
+                if (response.isSuccessful()) {
+                    PickUpResponse pickUpResponse = response.body();
+                    System.out.println(pickUpResponse);
+                    String boxNo = pickUpResponse.getBoxNo();
+                    processWithData(boxNo);
+                } else {
+                    // Handle the error
+                    Toast.makeText(getContext(), "Fetch failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PickUpResponse> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void processWithData(final String boxNo) {
+
+        Log.d(TAG, "processWithData: "+boxNo);
+        if (boxNo.equalsIgnoreCase("Code Not Fount")){
+            switch (sharedPreferences.getString("lg", "")) {
+                case "AZ":
+                    Toast.makeText(getActivity(), "Bağlama tapılmadı", Toast.LENGTH_SHORT).show();
+                    break;
+                case "EN":
+                    Toast.makeText(getActivity(), "Code Not Fount", Toast.LENGTH_SHORT).show();
+                    break;
+                case "RU":
+                    Toast.makeText(getActivity(), "Код не найден", Toast.LENGTH_SHORT).show();
+            }
+        }else {
+            switch (sharedPreferences.getString("lg", "")) {
+                case "AZ":
+                    Toast.makeText(getActivity(), boxNo+" açıqdır", Toast.LENGTH_SHORT).show();
+                    break;
+                case "EN":
+                    Toast.makeText(getActivity(), boxNo+" is open", Toast.LENGTH_SHORT).show();
+                    break;
+                case "RU":
+                    Toast.makeText(getActivity(), boxNo+" открыта", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        if (getActivity() != null){
+            ((MainActivity) getActivity()).replaceFragment(new MainFragment());
         }
     }
 

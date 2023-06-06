@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:paddingEnd="11dp"
+    android:paddingStart="11dp"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/searchHeader"
+        android:layout_width="1100dp"
+        android:layout_height="129dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="86dp"
+        android:fontFamily="@font/interbold"
+        android:text="Введите информацию"
+        android:textColor="#191919"
+        android:textSize="94sp"
+        app:layout_constraintBottom_toTopOf="@+id/errorMsgText"
+        app:layout_constraintEnd_toStartOf="@+id/closeButtonSearch"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/inventoryCodeEditText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintWidth_percent="1"
+        app:layout_constraintHeight_percent="0.23"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:hint="Идентификационный номер"
+        android:inputType="text"
+        android:textSize="64sp"
+        app:layout_constraintBottom_toTopOf="@+id/phoneNumberEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/errorMsgText"
+        tools:ignore="HardcodedText,TextFields" />
+
+    <EditText
+        android:id="@+id/phoneNumberEditText"
+        android:layout_width="1100dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:hint="Номер телефона"
+        android:inputType="text"
+        android:textSize="64sp"
+        app:layout_constraintBottom_toTopOf="@+id/submitButtonSearch"
+        app:layout_constraintHeight_percent="0.23"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/inventoryCodeEditText"
+        app:layout_constraintWidth_percent="1"
+        tools:ignore="HardcodedText,TextFields" />
+
+    <Button
+        android:id="@+id/closeButtonSearch"
+        android:layout_width="143dp"
+        android:layout_height="133dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/ic_baseline_close_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.09"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.09" />
+
+    <Button
+        android:id="@+id/submitButtonSearch"
+        android:layout_width="1356dp"
+        android:layout_height="204dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="39dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="38dp"
+        android:background="@drawable/bordered_button_green"
+        android:fontFamily="@font/intermedium"
+        android:text="Подтверждать"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="80sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.13"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phoneNumberEditText"
+        app:layout_constraintWidth_percent="1" />
+
+    <TextView
+        android:id="@+id/errorMsgText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="19dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="272dp"
+        android:fontFamily="@font/intersemibold"
+        android:text="Hesab nömrəsi və ya şifrə yalnışdır!"
+        android:textColor="@color/pantone_1925c_red"
+        android:visibility="gone"
+        android:textSize="50sp"
+        app:layout_constraintBottom_toTopOf="@+id/inventoryCodeEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/searchHeader"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/searchButton"
+        android:layout_width="224dp"
+        android:layout_height="221dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="31dp"
+        android:layout_marginEnd="26dp"
+        android:layout_marginBottom="39dp"
+        android:background="@drawable/button_rounded_dark_green"
+        android:drawableStart="@drawable/baseline_search_24_128"
+        android:paddingStart="56dp"
+        app:layout_constraintBottom_toTopOf="@+id/submitButtonSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/phoneNumberEditText"
+        app:layout_constraintTop_toBottomOf="@+id/inventoryCodeEditText"
+        tools:ignore="RtlSymmetry" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

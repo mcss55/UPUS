@@ -2,66 +2,75 @@ package com.mcss.upus.Activity;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mcss.upus.Core.DBHandler;
 import com.mcss.upus.Core.PackageReceiverSec;
 import com.mcss.upus.Fragment.LatticeSelectionFragment;
 import com.mcss.upus.Fragment.MainFragment;
+import com.mcss.upus.Model.SearchInventoryResponse;
+import com.mcss.upus.Model.SlidePicture;
 import com.mcss.upus.R;
+import com.mcss.upus.Repository.SearchRepo;
 import com.mcss.upus.Util.BackgroundWorks;
 import com.mcss.upus.Util.CommonActivityStyle;
 import com.mcss.upus.Util.TranslatorUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener{
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     PackageReceiverSec packageReceiverSec;
-    Button closeBtn, loginButton, languageBtnAZ, languageBtnEN, languageBtnRU;
-    TextView errorMessageText, date, time, loginHeader;
-    EditText userAccNumber, userPassword;
+    Button closeBtn, loginButton, languageBtnAZ, languageBtnEN, languageBtnRU, searchButton, submitButtonSearch, closeButtonSearch;
+    TextView errorMessageText, date, time, loginHeader, searchHeader;
+    EditText userAccNumber, userPassword, inventoryCodeEditText, phoneNumberEditText;
     SharedPreferences preferences;
+    SearchRepo searchRepo;
     SharedPreferences.Editor editor;
     TranslatorUtils translatorUtils;
+    private final String BASE_URL = "https://flysistem.flyex.az/api/";
     ImageView settingsButton, mapLogoButton;
     DBHandler dbHandler;
-    Dialog dialog;
+    Dialog dialog, searchDialog;
     private Handler handler;
     private Runnable updateTimeRunnable;
-
-    private final long TOUCH_TIMEOUT = 12000; // 120 seconds in milliseconds
+    private final long TOUCH_TIMEOUT = 120000; // 120 seconds in milliseconds
     private Handler timeoutHandler;
-    public  ConstraintLayout mainLayout;
+    public ConstraintLayout mainLayout;
     private Runnable timeoutRunnable;
-    private String TAG = "tagim";
+    private String TAG = "tagim", phoneNumber;
+    ;
+    private Retrofit retrofit;
 
     public void startTimeout() {
         timeoutHandler = new Handler();
@@ -77,13 +86,20 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     public void resetTimeout() {
         timeoutHandler.removeCallbacks(timeoutRunnable);
         timeoutHandler.postDelayed(timeoutRunnable, TOUCH_TIMEOUT);
-}
+    }
 
     @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Gson gson = new GsonBuilder().setLenient().create();
+        retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        searchRepo = retrofit.create(SearchRepo.class);
 
         translatorUtils = new TranslatorUtils(this);
 
@@ -94,25 +110,25 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = preferences.edit();
 
-        editor.putString("lg","AZ");
+        editor.putString("lg", "AZ");
         editor.apply();
 
         languageBtnAZ.setOnClickListener(view -> {
-            editor.putString("lg","AZ");
+            editor.putString("lg", "AZ");
             editor.apply();
         });
         languageBtnEN.setOnClickListener(view -> {
-            editor.putString("lg","EN");
+            editor.putString("lg", "EN");
             editor.apply();
         });
         languageBtnRU.setOnClickListener(view -> {
-            editor.putString("lg","RU");
+            editor.putString("lg", "RU");
             editor.apply();
         });
 
 
         // DB WORKS START
-/*
+
 
         dbHandler = new DBHandler(this);
 
@@ -192,6 +208,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         dbHandler.addDataToENTable("userAccountPasswordEditText", "Password");
         dbHandler.addDataToRUTable("userAccountPasswordEditText", "Пароль");
 
+        dbHandler.addDataToAZTable("inventoryCodeEditText", "İzləmə nömrəsi");
+        dbHandler.addDataToENTable("inventoryCodeEditText", "Tracking number");
+        dbHandler.addDataToRUTable("inventoryCodeEditText", "Идентификационный номер");
+
+        dbHandler.addDataToAZTable("phoneNumberEditText", "Telefon nömrəsi");
+        dbHandler.addDataToENTable("phoneNumberEditText", "Phone number");
+        dbHandler.addDataToRUTable("phoneNumberEditText", "Номер телефона");
+
 
         dbHandler.addDataToAZTable("errorMsgText", "Məlumatları doldurun!");
         dbHandler.addDataToENTable("errorMsgText", "Fill in the information!");
@@ -206,9 +230,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         dbHandler.addDataToAZTable("loginBtn", "Daxil ol");
         dbHandler.addDataToENTable("loginBtn", "Sign in");
         dbHandler.addDataToRUTable("loginBtn", "Вход");
-*/
-
-       /* dbHandler = new DBHandler(this);
 
         dbHandler.addDataToAZTable("deliverHeader", "Yerləşdirmək üçün tamamlayın");
         dbHandler.addDataToENTable("deliverHeader", "Finish up to drop off");
@@ -224,11 +245,26 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         dbHandler.addDataToAZTable("cellPhoneNumber", "Telefon nömrəsi");
         dbHandler.addDataToENTable("cellPhoneNumber", "Cell phone number");
-        dbHandler.addDataToRUTable("cellPhoneNumber", "Номер телефона");*/
+        dbHandler.addDataToRUTable("cellPhoneNumber", "Номер телефона");
 
+        dbHandler.addDataToRUTable("searchHeader", "Məlumatları daxil et");
+        dbHandler.addDataToRUTable("searchHeader", "Enter the information");
+        dbHandler.addDataToRUTable("searchHeader", "Введите информацию");
 
+        dbHandler.addDataToRUTable("inventoryCodeEditText", "İzləmə nömrəsi");
+        dbHandler.addDataToRUTable("inventoryCodeEditText", "Tracking number");
+        dbHandler.addDataToRUTable("inventoryCodeEditText", "Идентификационный номер");
 
-        // DB WORKS END*
+        dbHandler.addDataToRUTable("phoneNumberEditText", "Telefon nömrəsi");
+        dbHandler.addDataToRUTable("phoneNumberEditText", "Phone number");
+        dbHandler.addDataToRUTable("phoneNumberEditText", "Номер телефона");
+
+        dbHandler.addDataToRUTable("submitButton", "Təsdiq et");
+        dbHandler.addDataToRUTable("submitButton", "Submit");
+        dbHandler.addDataToRUTable("submitButton", "Подтверждать");
+
+        // DB WORKS END
+
 
 
 
@@ -238,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             resetTimeout();
             return false;
         });
+
         // Start the timeout countdown
         startTimeout();
 
@@ -257,6 +294,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             }
         };
 
+        // login dialog
+
         dialog = new Dialog(MainActivity.this);
         dialog.setContentView(R.layout.login_dialog);
         dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -266,7 +305,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             return false;
         });
 
-
         loginHeader = dialog.findViewById(R.id.loginHeader);
         loginButton = dialog.findViewById(R.id.loginBtn);
         userAccNumber = dialog.findViewById(R.id.userAccountNumberEditText);
@@ -274,11 +312,33 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         userPassword = dialog.findViewById(R.id.userAccountPasswordEditText);
         closeBtn = dialog.findViewById(R.id.closeButton);
 
+        // search dialog
+
+        searchDialog = new Dialog(MainActivity.this);
+        searchDialog.setContentView(R.layout.search_dialog);
+        searchDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        searchDialog.setCancelable(false);
+        searchDialog.setOnKeyListener((dialogInterface, i, keyEvent) -> {
+            resetTimeout();
+            return false;
+        });
+
+        searchHeader = searchDialog.findViewById(R.id.searchHeader);
+        submitButtonSearch = searchDialog.findViewById(R.id.submitButtonSearch);
+        inventoryCodeEditText = searchDialog.findViewById(R.id.inventoryCodeEditText);
+        phoneNumberEditText = searchDialog.findViewById(R.id.phoneNumberEditText);
+        closeButtonSearch = searchDialog.findViewById(R.id.closeButtonSearch);
+        searchButton = searchDialog.findViewById(R.id.searchButton);
+
+
+        // login dialog ops
 
         loginButton.setOnClickListener((view) -> {
-            if (userAccNumber.getText().length() == 0 || userPassword.getText().toString().length() == 0) {
+            String userAccNumber = this.userAccNumber.getText().toString();
+            String userPassword = this.userPassword.getText().toString();
+            if (userAccNumber.length() == 0 || userPassword.length() == 0) {
 
-                switch (preferences.getString("lg","")) {
+                switch (preferences.getString("lg", "")) {
                     case "AZ":
                         errorMessageText.setText("Məlumatları doldurun!");
                         break;
@@ -290,28 +350,41 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 }
                 errorMessageText.setTextColor(Color.parseColor("#ee004e"));
                 errorMessageText.setVisibility(View.VISIBLE);
-            } else if (userAccNumber.getText().length() != 0 || userPassword.getText().toString().length() != 0) {
-                replaceFragment(new LatticeSelectionFragment());
-                userAccNumber.setText("");
-                userPassword.setText("");
-
-                dialog.dismiss();
-
-
             } else {
-                errorMessageText.setVisibility(View.VISIBLE);
-                errorMessageText.setTextColor(Color.parseColor("#ee004e"));
-                switch (preferences.getString("lg","")) {
-                    case "AZ":
-                        errorMessageText.setText("Hesab nömrəsi və ya şifrə yalnışdır!");
-                        break;
-                    case "EN":
-                        errorMessageText.setText("The account number or password is incorrect!");
-                        break;
-                    case "RU":
-                        errorMessageText.setText("Номер счета или пароль неверный!");
-                }
+                if (userAccNumber.equals("user1") && userPassword.equals("123")) {
+                    replaceFragment(new LatticeSelectionFragment());
+                    this.userAccNumber.setText("");
+                    this.userPassword.setText("");
+                    dialog.dismiss();
+                } else {
+                    errorMessageText.setVisibility(View.VISIBLE);
+                    errorMessageText.setTextColor(Color.parseColor("#ee004e"));
+                    switch (preferences.getString("lg", "")) {
+                        case "AZ":
+                            errorMessageText.setText("Hesab nömrəsi və ya şifrə yalnışdır!");
+                            break;
+                        case "EN":
+                            errorMessageText.setText("The account number or password is incorrect!");
+                            break;
+                        case "RU":
+                            errorMessageText.setText("Номер счета или пароль неверный!");
+                    }
 
+                }
+            }
+
+
+        });
+
+        // search dialog ops
+
+        submitButtonSearch.setOnClickListener(view -> {
+
+            String inventoryCode = this.inventoryCodeEditText.getText().toString();
+
+            phoneNumber = this.phoneNumberEditText.getText().toString();
+            if (inventoryCode.length() != 0 && phoneNumber.length() == 0) {
+                fetchData(inventoryCode);
             }
         });
 
@@ -321,9 +394,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             errorMessageText.setVisibility(View.GONE);
         });
 
+        searchDialog.setOnCancelListener(l -> {
+            inventoryCodeEditText.setText("");
+            phoneNumberEditText.setText("");
+        });
+
         closeBtn.setOnClickListener((view) -> dialog.dismiss());
-        translatorUtils.converDialogText(preferences.getString("lg",""),dialog);
-        translatorUtils.convertAllText(preferences.getString("lg",""), MainActivity.this);
+        closeButtonSearch.setOnClickListener((view) -> searchDialog.dismiss());
+        translatorUtils.converDialogText(preferences.getString("lg", ""), dialog);
+        translatorUtils.convertAllText(preferences.getString("lg", ""), MainActivity.this);
 
         CommonActivityStyle.set(this);
 
@@ -341,7 +420,46 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
+    }
 
+    private void fetchData(String inventoryCode) {
+
+        Call<String> call = searchRepo.getPhoneNumber(inventoryCode);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful()) {
+                    String inventoryCode = response.body();
+                    processWithData(inventoryCode);
+                } else {
+                    // Handle the error
+                    Log.d(TAG, "API call failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void processWithData(String inventoryCode) {
+        if (!inventoryCode.equalsIgnoreCase("Bundle Not Fount")){
+            phoneNumberEditText.setText(inventoryCode);
+        }else{
+            switch (preferences.getString("lg", "")) {
+                case "AZ":
+                    Toast.makeText(this, "Bağlama tapılmadı", Toast.LENGTH_SHORT).show();
+                    break;
+                case "EN":
+                    Toast.makeText(this, "Bundle not found", Toast.LENGTH_SHORT).show();
+                    break;
+                case "RU":
+                    Toast.makeText(this, "Пакет не найден", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 
@@ -398,6 +516,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         dialog.show();
     }
 
+    public void openSearchDialog() {
+        searchDialog.show();
+    }
+
     public void replaceFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.frameLayout, fragment)
@@ -407,8 +529,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), this);
-        translatorUtils.converDialogText(sharedPreferences.getString("lg",""),dialog);
+        translatorUtils.convertAllText(sharedPreferences.getString("lg", ""), this);
+        translatorUtils.converDialogText(sharedPreferences.getString("lg", ""), dialog);
     }
 
     @Override

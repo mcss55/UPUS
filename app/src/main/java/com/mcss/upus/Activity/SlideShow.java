@@ -2,11 +2,9 @@ package com.mcss.upus.Activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,9 +13,8 @@ import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mcss.upus.Core.API;
+import com.mcss.upus.Core.SlidePicturesRepository;
 import com.mcss.upus.Core.ImageDownloader;
-import com.mcss.upus.CustomSlider.CustomImageSlider;
 import com.mcss.upus.Model.SlidePicture;
 import com.mcss.upus.R;
 import com.mcss.upus.Util.CommonActivityStyle;
@@ -25,8 +22,6 @@ import com.mcss.upus.Util.CommonActivityStyle;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -40,12 +35,12 @@ public class SlideShow extends AppCompatActivity {
     private final String BASE_URL = "https://flysistem.flyex.az/api/";
     ArrayList<SlideModel> slideModelArrayList;
     ArrayList<String> fileNames;
-    API api;
+    SlidePicturesRepository slidePicturesRepository;
     ArrayList<SlidePicture> slidePictures;
     ImageDownloader imageDownloader;
     Retrofit retrofit;
 
-    @SuppressLint({"ResourceType","ClickableViewAccessibility", "MissingInflatedId"})
+    @SuppressLint({"ResourceType", "ClickableViewAccessibility", "MissingInflatedId"})
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,26 +51,30 @@ public class SlideShow extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         CommonActivityStyle.set(this);
-//        ImageSlider imageSlider = findViewById(R.id.imageSlider);
+        ImageSlider imageSlider = findViewById(R.id.imageSlider);
         slideModelArrayList = new ArrayList<>();
-
-        ArrayList<ImageView> imageLists = new ArrayList<>();
 
         imageDownloader = new ImageDownloader(this);
 
-        api = retrofit.create(API.class);
+        slidePicturesRepository = retrofit.create(SlidePicturesRepository.class);
 
-        fetchData();
+//        fetchData();
 
 //        imageSliderC.setSlides(slideModelList);
 
 
 
-//        imageSlider.setOnClickListener(view -> {
-//            Intent intent = new Intent(this, MainActivity.class);
-//            this.startActivity(intent);
-//            finish();
-//        });
+        slideModelArrayList.add(new SlideModel(R.drawable.image_1,ScaleTypes.FIT));
+        slideModelArrayList.add(new SlideModel(R.drawable.image_2,ScaleTypes.FIT));
+        slideModelArrayList.add(new SlideModel(R.drawable.image_3,ScaleTypes.FIT));
+
+        imageSlider.setImageList(slideModelArrayList);
+        imageSlider.setTouchListener(view -> {
+            Log.d(TAG, "onCreate: clicked");
+            Intent intent = new Intent(this, MainActivity.class);
+            this.startActivity(intent);
+            finish();
+        });
     }
 
     @Override
@@ -86,7 +85,7 @@ public class SlideShow extends AppCompatActivity {
     }
 
     private void fetchData() {
-        Call<List<SlidePicture>> call = api.getPictures();
+        Call<List<SlidePicture>> call = slidePicturesRepository.getPictures();
 
         call.enqueue(new Callback<List<SlidePicture>>() {
             @Override

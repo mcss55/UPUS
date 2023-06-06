@@ -7,11 +7,11 @@
         <deviceKey>
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="C:\Users\LENOVO\.android\avd\Monitor_API_25.avd" />
+            <value value="C:\Users\LENOVO\.android\avd\New_Monitor_API_25.avd" />
           </Key>
         </deviceKey>
       </Target>
     </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-06-05T08:31:02.761343900Z" />
+    <timeTargetWasSelectedWithDropDown value="2023-06-06T13:03:24.815958700Z" />
   </component>
 </project>

@@ -1,25 +1,35 @@
 package com.mcss.upus.Fragment;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
+import com.mcss.upus.Activity.MainActivity;
 import com.mcss.upus.R;
 import com.mcss.upus.Util.TranslatorUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 
 public class DeliverScanFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -28,9 +38,24 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
     TableLayout tableLayout;
     SharedPreferences sharedPreferences;
     TranslatorUtils translatorUtils;
+    HashMap<Integer, Button> inventoryButtonHashMap;
+    HashMap<Integer, Button> removeButtonDecreaseHashMap;
+    HashMap<Integer, TextView> cabinetNumberTxtHashMap;
+    HashMap<Integer, TextView> trackingNumberTxtHashMap;
+    ImageView closeButton;
+    HashMap<Integer, TextView> cellPhoneNumberTxtHashMap;
+    HashMap<Integer, List<String>> data;
+    static int countDataKey;
 
 
-    public DeliverScanFragment() {}
+    public DeliverScanFragment() {
+        inventoryButtonHashMap = new HashMap<>();
+        removeButtonDecreaseHashMap = new HashMap<>();
+        cabinetNumberTxtHashMap = new HashMap<>();
+        trackingNumberTxtHashMap = new HashMap<>();
+        cellPhoneNumberTxtHashMap = new HashMap<>();
+
+    }
 
     private int pxToDp(int dp) {
         return (int) TypedValue.applyDimension(
@@ -40,7 +65,7 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
         );
     }
 
-    private void addRowWithData(String data1, String data2, String data3){
+    private void addRowWithData(String data1, String data2, String data3) {
 
         TableRow tableRow = new TableRow(getActivity());
 
@@ -103,7 +128,7 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
         btnInverntory.setPadding(pxToDp(10), 0, pxToDp(10), 0);
         TableRow.LayoutParams layoutParams4 = (TableRow.LayoutParams) btnInverntory.getLayoutParams();
         layoutParams4.setMarginStart(pxToDp(20));
-        layoutParams4.bottomMargin =pxToDp(10);
+        layoutParams4.bottomMargin = pxToDp(10);
         btnInverntory.setLayoutParams(layoutParams4);
         btnInverntory.setOnClickListener(this);
 
@@ -132,6 +157,12 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
 
         // Add table row to table layout
         tableLayout.addView(tableRow);
+
+        inventoryButtonHashMap.put(btnInverntory.getId(), btnInverntory);
+        removeButtonDecreaseHashMap.put(btnRemove.getId(), btnRemove);
+        trackingNumberTxtHashMap.put(trackingNumber.getId(), trackingNumber);
+        cellPhoneNumberTxtHashMap.put(cellPhoneNumber.getId(), cellPhoneNumber);
+        cabinetNumberTxtHashMap.put(cabinetNumber.getId(), cabinetNumber);
     }
 
     @Override
@@ -158,28 +189,71 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
         View view = inflater.inflate(R.layout.fragment_deliver_scan, container, false);
         tableLayout = view.findViewById(R.id.customTableDeliver);
 
-        addRowWithData("A432","A2sadsd","+994501234567");
-        addRowWithData("A433","A2sads2","+994503481507");
-        addRowWithData("A434","A2sads3","+994503481503");
-        addRowWithData("A435","A2sads4","+994503481504");
+        addRowWithData("A432", "A2sadsd", "+994501234567");
+        addRowWithData("A433", "A2sads2", "+994503481507");
+        addRowWithData("A434", "A2sads3", "+994503481503");
+        addRowWithData("A435", "A2sads4", "+994503481504");
+
+        closeButton = view.findViewById(R.id.closeButtonDelivery);
+        closeButton.setOnClickListener(this);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         translatorUtils = new TranslatorUtils(getActivity());
 
-        translatorUtils.convertAllText(sharedPreferences.getString("lg",""),DeliverScanFragment.this, view);
+        translatorUtils.convertAllText(sharedPreferences.getString("lg", ""), DeliverScanFragment.this, view);
         return view;
 
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        translatorUtils.convertAllText(sharedPreferences.getString("lg",""),DeliverScanFragment.this, this.getView());
+        translatorUtils.convertAllText(sharedPreferences.getString("lg", ""), DeliverScanFragment.this, this.getView());
     }
 
     @Override
+    @SuppressLint("ResourceType")
     public void onClick(View view) {
 
-        System.out.println(view.getId());
+        Objects.requireNonNull((MainActivity) getActivity()).resetTimeout();
+
+        countDataKey = 0;
+        data = new HashMap<>();
+
+        if (view instanceof Button) {
+
+            if (((Button) view).getText().toString().equalsIgnoreCase("inventory")) {
+
+                Button buttonInventory = (Button) view;
+                TextView cabinetNumber = cabinetNumberTxtHashMap.get(buttonInventory.getId() - 3);
+                TextView trackingNumber = trackingNumberTxtHashMap.get(buttonInventory.getId() - 2);
+                TextView cellPhoneNumber = cellPhoneNumberTxtHashMap.get(buttonInventory.getId() - 1);
+                data.put(countDataKey++, new ArrayList<>(Arrays.asList(cabinetNumber.getText().toString(),
+                        trackingNumber.getText().toString(),
+                        cellPhoneNumber.getText().toString())));
+                Log.d("deliverytag", "onClick: " + data + " Cabinet: " + data.get(countDataKey - 1).get(0) + " achildi");
+                ((MainActivity) getActivity()).openSearchDialog();
+
+            } else if (((Button) view).getText().toString().equalsIgnoreCase("remove")) {
+
+                Button buttonRemove = (Button) view;
+                TextView cabinetNumber = cabinetNumberTxtHashMap.get(buttonRemove.getId() - 4);
+                TextView trackingNumber = trackingNumberTxtHashMap.get(buttonRemove.getId() - 3);
+                TextView cellPhoneNumber = cellPhoneNumberTxtHashMap.get(buttonRemove.getId() - 2);
+                Button buttonInventory = inventoryButtonHashMap.get(buttonRemove.getId() - 1);
+                ViewGroup rootView = (ViewGroup) buttonRemove.getParent();
+                rootView.removeView(cabinetNumber);
+                rootView.removeView(trackingNumber);
+                rootView.removeView(cellPhoneNumber);
+                rootView.removeView(buttonRemove);
+                rootView.removeView(buttonInventory);
+
+            }
+        }else if (view.getId() == R.id.closeButtonDelivery){
+            if (getActivity() != null){
+                ((MainActivity) getActivity()).replaceFragment(new MainFragment());
+            }
+        }
+
 
     }
 }

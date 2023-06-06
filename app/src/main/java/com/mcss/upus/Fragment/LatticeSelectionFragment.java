@@ -269,6 +269,9 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         Objects.requireNonNull((MainActivity) getActivity()).resetTimeout();
 
         if (view.getId() == R.id.nextStepBtn) {
+
+            // TODO : send row count to delvierscan fragment
+
             MainActivity mainActivity = (MainActivity) getActivity();
             if (mainActivity != null) {
                 mainActivity.replaceFragment(new DeliverScanFragment());
