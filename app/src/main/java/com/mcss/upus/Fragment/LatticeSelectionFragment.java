@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.mcss.upus.Activity.MainActivity;
+import com.mcss.upus.Core.DuplicateMap;
 import com.mcss.upus.R;
 import com.mcss.upus.Util.TranslatorUtils;
 
@@ -270,7 +271,7 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
             MainActivity mainActivity = (MainActivity) getActivity();
 
             if (mainActivity != null) {
-                HashMap<String, List<String>> dataToDelivery = new HashMap<>();
+                DuplicateMap<String, List<String>> dataToDelivery = new DuplicateMap<>();
                 Random randomNum = new Random();
                 for (Map.Entry<Integer, TextView> integerTextViewEntry : textViewCountNumberList.entrySet()) {
                     for (int i = 0; i < Integer.parseInt(integerTextViewEntry.getValue().getText().toString()); i++) {
@@ -279,10 +280,10 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
                                 "9945030012" + (randomNum.nextInt(50)+ 1));
                         //addRowWithData("A" + (randomNum.nextInt(50) * 10 + 1), "FLX2422" + (randomNum.nextInt(50) * 10 + 1), "+9945030012" + (randomNum.nextInt(50) * 10 + 1))
                         List<String> tempDataList = new ArrayList<>();
-                        tempDataList.add("A" + (randomNum.nextInt(50) * 10 + 1));
-                        tempDataList.add("FLX2422" + (randomNum.nextInt(50) * 10 + 1));
-                        tempDataList.add( "+9945030012" + (randomNum.nextInt(50) * 10 + 1));
-                        dataToDelivery.put(textViewTypeList.get(integerTextViewEntry.getKey()-3).getText().toString(),tempDataList);
+                        tempDataList.add("A" + (randomNum.nextInt(50) + 1));
+                        tempDataList.add("FLX2422" + (randomNum.nextInt(50) + 1));
+                        tempDataList.add( "+9945030012" + (randomNum.nextInt(50) + 1));
+                        dataToDelivery.put(Objects.requireNonNull(textViewTypeList.get(integerTextViewEntry.getKey() - 3)).getText().toString(),tempDataList);
 //                        textViewTypeList.forEach((key, value) -> Log.d(TAG, "for loop type: "+key+" value: "+value.getText().toString()));
 //                        Log.d(TAG, "for loop 1: "+integerTextViewEntry.getKey()+" value: "+integerTextViewEntry.getValue().getText().toString());
                     }

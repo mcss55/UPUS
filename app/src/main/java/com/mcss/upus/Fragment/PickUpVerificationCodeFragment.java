@@ -1,12 +1,8 @@
 package com.mcss.upus.Fragment;
 
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.preference.PreferenceManager;
 import android.text.InputFilter;
 import android.util.Log;
@@ -18,14 +14,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import com.mcss.upus.Activity.MainActivity;
-import com.mcss.upus.Model.PickUpResponse;
 import com.mcss.upus.R;
+import com.mcss.upus.Repository.CargomatUpdate;
 import com.mcss.upus.Repository.PickUpRepository;
-import com.mcss.upus.Repository.SearchRepo;
 import com.mcss.upus.Util.TranslatorUtils;
 
 import java.util.List;
@@ -42,6 +41,7 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
     private EditText[] boxes;
     private int currentBoxIndex;
     private Retrofit retrofit;
+    CargomatUpdate cargomatUpdate;
     final String TAG = "verify code";
     PickUpRepository pickUpRepository;
     SharedPreferences sharedPreferences;
@@ -146,6 +146,7 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
         submitButton.setOnClickListener(this);
         clearButton.setOnClickListener(this::onClearButtonClick);
         closeBtn.setOnClickListener(this);
+        cargomatUpdate = retrofit.create(CargomatUpdate.class);
     }
 
 
@@ -220,14 +221,16 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
                 Log.d(TAG, "onResponse: response code "+response.code());
                 if (response.isSuccessful()) {
                     if (response.body() instanceof List){
-                        String boxNo;
+                        Log.d(TAG, "onResponse: list: "+response.body());
                         LinkedTreeMap<String, Object> linkedTreeMap = ((List<LinkedTreeMap<String, Object>>) response.body()).get(0);
-                        processWithData((String) linkedTreeMap.get("box_no"));
+                        processWithData((String) linkedTreeMap.get("box_no"), password, (String) linkedTreeMap.get("mainboard_id"), (String) linkedTreeMap.get("device_id"));
                     }else{
                         if (response.body() instanceof String) {
-                            processWithData(response.body().toString());
+                            Log.d(TAG, "onResponse: string: "+response.body());
+                            processWithData(response.body().toString(), null, null, null);
                         }
                     }
+                    Log.d(TAG, "onResponse: response.body() "+response.body());
 
                 } else {
                     // Handle the error
@@ -242,7 +245,7 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
         });
     }
 
-    private void processWithData(final String boxNo) {
+    private void processWithData(final String boxNo, String password, String mainboard_id, String device_id) {
 
         Log.d(TAG, "processWithData: "+boxNo);
 
@@ -258,6 +261,23 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
                     Toast.makeText(getActivity(), "Код не найден", Toast.LENGTH_SHORT).show();
             }
         }else {
+            if (password != null){
+                Call<String> call = cargomatUpdate.updateData(null, password);
+                call.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        if (response.isSuccessful())
+                            Log.d(TAG, "onResponse: cargomatUpdate: "+response.body());
+                        else
+                            Log.d(TAG, "onResponse: cargomatUpdate: "+response.code());
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, @NonNull Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
+            }
             switch (sharedPreferences.getString("lg", "")) {
                 case "AZ":
                     Toast.makeText(getActivity(), boxNo+" açıqdır", Toast.LENGTH_SHORT).show();
@@ -268,12 +288,25 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
                 case "RU":
                     Toast.makeText(getActivity(), boxNo+" открыта", Toast.LENGTH_SHORT).show();
             }
+
+//            openLock(Byte.parseByte(mainboard_id),Byte.parseByte(boxNo.replace("A", "")),null);
+
+
         }
 
         if (getActivity() != null){
             ((MainActivity) getActivity()).replaceFragment(new MainFragment());
         }
     }
+   /* public static boolean openLock(byte boardNo, byte lockNo, String[] rsMsg)
+    {
+        return lockCmd((byte) 0x8A, boardNo, lockNo, rsMsg);
+    }
+
+    public static boolean openAllLock(byte boardNo, String[] rsMsg)
+    {
+        return lockCmd((byte) 0x9D, boardNo, (byte)0x02, rsMsg);
+    }*/
 
     public void onClearButtonClick(View view) {
         Objects.requireNonNull((MainActivity) getActivity()).resetTimeout();

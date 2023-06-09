@@ -445,7 +445,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 if (response.isSuccessful()) {
                     String inventoryCode = response.body();
                     try {
-                        processWithData(inventoryCode);
+                        if (inventoryCode != null) {
+                            processWithData(inventoryCode);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
 
@@ -458,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-
+                t.printStackTrace();
             }
         });
     }

@@ -22,6 +22,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.mcss.upus.Activity.MainActivity;
+import com.mcss.upus.Core.DuplicateMap;
 import com.mcss.upus.R;
 import com.mcss.upus.Util.TranslatorUtils;
 
@@ -46,13 +47,13 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
     ImageView closeButton;
     HashMap<Integer, TextView> cellPhoneNumberTxtHashMap;
     HashMap<Integer, List<String>> data;
-    HashMap<String,List<String>> dataFromLattice;
+    DuplicateMap<String,List<String>> dataFromLattice;
     private static DeliverScanFragment instance = null;
     static int countDataKey;
     private final String TAG = "deliverTag";
 
 
-    public DeliverScanFragment(HashMap<String, List<String>> dataFromLattice) {
+    public DeliverScanFragment(DuplicateMap<String, List<String>> dataFromLattice) {
         this.dataFromLattice = dataFromLattice;
         inventoryButtonHashMap = new HashMap<>();
         removeButtonDecreaseHashMap = new HashMap<>();
@@ -199,13 +200,67 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
         View view = inflater.inflate(R.layout.fragment_deliver_scan, container, false);
         tableLayout = view.findViewById(R.id.customTableDeliver);
 
-        addRowWithData("A432", "A2sadsd", "+994501234567");
+        /*addRowWithData("A432", "A2sadsd", "+994501234567");
         addRowWithData("A433", "A2sads2", "+994503481507");
-        addRowWithData("A434", "A2sads3", "+994503481503");
+        addRowWithData("A434", "A2sads3", "+994503481503");*/
 
-        for (Map.Entry<String, List<String>> stringListEntry : dataFromLattice.entrySet()) {
-            Log.d(TAG, "onCreateView: data from lattice: "+stringListEntry.getKey()+" list: "+stringListEntry.getValue());
+        // small box
+        if (dataFromLattice.get("Balaca qutu") != null && dataFromLattice.get("Small box") == null && dataFromLattice.get("Маленькая коробка") == null) {
+            for (List<String> strings : dataFromLattice.get("Balaca qutu")) {
+                System.out.println(strings);
+                addRowWithData(strings.get(0),strings.get(1),strings.get(2));
+            }
+        } else if (dataFromLattice.get("Balaca qutu") == null && dataFromLattice.get("Small box") != null && dataFromLattice.get("Маленькая коробка") == null) {
+            for (List<String> strings : dataFromLattice.get("Small box")) {
+                System.out.println(strings);
+                addRowWithData(strings.get(0),strings.get(1),strings.get(2));
+            }
+        } else if (dataFromLattice.get("Balaca qutu") == null && dataFromLattice.get("Small box") == null && dataFromLattice.get("Маленькая коробка") != null) {
+            for (List<String> strings : dataFromLattice.get("Маленькая коробка")) {
+                System.out.println(strings);
+                addRowWithData(strings.get(0),strings.get(1),strings.get(2));
+            }
         }
+
+        // medium box
+
+        if (dataFromLattice.get("Medium qutu") != null && dataFromLattice.get("Medium box") == null && dataFromLattice.get("Средняя коробка") == null) {
+            for (List<String> strings : dataFromLattice.get("Medium qutu")) {
+                System.out.println(strings);
+                addRowWithData(strings.get(0),strings.get(1),strings.get(2));
+            }
+        } else if (dataFromLattice.get("Medium qutu") == null && dataFromLattice.get("Medium box") != null && dataFromLattice.get("Средняя коробка") == null) {
+            for (List<String> strings : dataFromLattice.get("Medium box")) {
+                System.out.println(strings);
+                addRowWithData(strings.get(0),strings.get(1),strings.get(2));
+            }
+        } else if (dataFromLattice.get("Medium qutu") == null && dataFromLattice.get("Medium box") == null && dataFromLattice.get("Средняя коробка") != null) {
+            for (List<String> strings : dataFromLattice.get("Средняя коробка")) {
+                System.out.println(strings);
+                addRowWithData(strings.get(0),strings.get(1),strings.get(2));
+            }
+        }
+
+
+        // large  box
+
+        if (dataFromLattice.get("Böyük qutu") != null && dataFromLattice.get("Large box") == null && dataFromLattice.get("Большая коробка") == null) {
+            for (List<String> strings : dataFromLattice.get("Böyük qutu")) {
+                System.out.println(strings);
+                addRowWithData(strings.get(0),strings.get(1),strings.get(2));
+            }
+        } else if (dataFromLattice.get("Böyük qutu") == null && dataFromLattice.get("Large box") != null && dataFromLattice.get("Большая коробка") == null) {
+            for (List<String> strings : dataFromLattice.get("Large box")) {
+                System.out.println(strings);
+                addRowWithData(strings.get(0),strings.get(1),strings.get(2));
+            }
+        } else if (dataFromLattice.get("Böyük qutu") == null && dataFromLattice.get("Large box") == null && dataFromLattice.get("Большая коробка") != null) {
+            for (List<String> strings : dataFromLattice.get("Большая коробка")) {
+                System.out.println(strings);
+                addRowWithData(strings.get(0),strings.get(1),strings.get(2));
+            }
+        }
+
 
         closeButton = view.findViewById(R.id.closeButtonDelivery);
         closeButton.setOnClickListener(this);
