@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.internal.LinkedTreeMap;
 import com.mcss.upus.Activity.MainActivity;
 import com.mcss.upus.Model.PickUpResponse;
 import com.mcss.upus.R;
@@ -27,6 +28,7 @@ import com.mcss.upus.Repository.PickUpRepository;
 import com.mcss.upus.Repository.SearchRepo;
 import com.mcss.upus.Util.TranslatorUtils;
 
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -210,17 +212,23 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
     }
 
     private void openLattice(String password) {
+        Call<Object> call = pickUpRepository.getPickUpDetails(password);
 
-        Call<PickUpResponse> call = pickUpRepository.getPickUpDetails(password);
-
-        call.enqueue(new Callback<PickUpResponse>() {
+        call.enqueue(new Callback<Object>() {
             @Override
-            public void onResponse(Call<PickUpResponse> call, Response<PickUpResponse> response) {
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                Log.d(TAG, "onResponse: response code "+response.code());
                 if (response.isSuccessful()) {
-                    PickUpResponse pickUpResponse = response.body();
-                    System.out.println(pickUpResponse);
-                    String boxNo = pickUpResponse.getBoxNo();
-                    processWithData(boxNo);
+                    if (response.body() instanceof List){
+                        String boxNo;
+                        LinkedTreeMap<String, Object> linkedTreeMap = ((List<LinkedTreeMap<String, Object>>) response.body()).get(0);
+                        processWithData((String) linkedTreeMap.get("box_no"));
+                    }else{
+                        if (response.body() instanceof String) {
+                            processWithData(response.body().toString());
+                        }
+                    }
+
                 } else {
                     // Handle the error
                     Toast.makeText(getContext(), "Fetch failed", Toast.LENGTH_SHORT).show();
@@ -228,8 +236,8 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
             }
 
             @Override
-            public void onFailure(Call<PickUpResponse> call, Throwable t) {
-
+            public void onFailure(Call<Object> call, Throwable t) {
+                t.printStackTrace();
             }
         });
     }
@@ -237,6 +245,7 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
     private void processWithData(final String boxNo) {
 
         Log.d(TAG, "processWithData: "+boxNo);
+
         if (boxNo.equalsIgnoreCase("Code Not Fount")){
             switch (sharedPreferences.getString("lg", "")) {
                 case "AZ":
@@ -272,11 +281,11 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
             box.setText("");
         }
         currentBoxIndex = 0;
-
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         translatorUtils.convertAllText(sharedPreferences.getString("lg",""), PickUpVerificationCodeFragment.this, this.getView());
     }
+
 }

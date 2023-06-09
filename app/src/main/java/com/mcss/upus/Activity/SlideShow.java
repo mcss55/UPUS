@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
+import com.denzcoskun.imageslider.interfaces.ItemChangeListener;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -36,9 +37,11 @@ public class SlideShow extends AppCompatActivity {
     ArrayList<SlideModel> slideModelArrayList;
     ArrayList<String> fileNames;
     SlidePicturesRepository slidePicturesRepository;
+
     ArrayList<SlidePicture> slidePictures;
     ImageDownloader imageDownloader;
     Retrofit retrofit;
+    ImageSlider imageSlider;
 
     @SuppressLint({"ResourceType", "ClickableViewAccessibility", "MissingInflatedId"})
     @Override
@@ -51,22 +54,23 @@ public class SlideShow extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         CommonActivityStyle.set(this);
-        ImageSlider imageSlider = findViewById(R.id.imageSlider);
-        slideModelArrayList = new ArrayList<>();
+
 
         imageDownloader = new ImageDownloader(this);
 
         slidePicturesRepository = retrofit.create(SlidePicturesRepository.class);
 
-//        fetchData();
+        imageSlider = findViewById(R.id.imageSlider);
+        slideModelArrayList = new ArrayList<>();
 
-//        imageSliderC.setSlides(slideModelList);
-
-
+//        fetchData(slideModels -> {
+//            slideModelArrayList = slideModels;
+//        });
 
         slideModelArrayList.add(new SlideModel(R.drawable.image_1,ScaleTypes.FIT));
         slideModelArrayList.add(new SlideModel(R.drawable.image_2,ScaleTypes.FIT));
         slideModelArrayList.add(new SlideModel(R.drawable.image_3,ScaleTypes.FIT));
+
 
         imageSlider.setImageList(slideModelArrayList);
         imageSlider.setTouchListener(view -> {
@@ -75,6 +79,7 @@ public class SlideShow extends AppCompatActivity {
             this.startActivity(intent);
             finish();
         });
+
     }
 
     @Override
@@ -84,7 +89,8 @@ public class SlideShow extends AppCompatActivity {
         // super.onBackPressed();
     }
 
-    private void fetchData() {
+    private void fetchData(final FetchDataCallback callback) {
+
         Call<List<SlidePicture>> call = slidePicturesRepository.getPictures();
 
         call.enqueue(new Callback<List<SlidePicture>>() {
@@ -92,12 +98,15 @@ public class SlideShow extends AppCompatActivity {
             public void onResponse(Call<List<SlidePicture>> call, Response<List<SlidePicture>> response) {
                 if (response.isSuccessful()) {
                     List<SlidePicture> retrievedList = response.body();
-                    fileNames = new ArrayList<>();
-                    for (SlidePicture slidePicture : retrievedList) {
-                        fileNames.add(slidePicture.getUrl());
-                    }
-                    imageDownloader.execute(fileNames);
                     processWithData(retrievedList);
+                    if (retrievedList != null) {
+
+                        for (SlidePicture slidePicture : retrievedList)
+                            slideModelArrayList.add(new SlideModel(slidePicture.getUrl(), ScaleTypes.CENTER_INSIDE));
+
+                        callback.onDataFetched(slideModelArrayList);
+                    } else
+                        Log.d(TAG, "processWithData: is null");
                 } else {
                     // Handle the error
                     Log.d(TAG, "API call failed");
@@ -113,15 +122,10 @@ public class SlideShow extends AppCompatActivity {
     }
 
     private void processWithData(List<SlidePicture> retrievedList) {
-        if (retrievedList != null) {
-            for (String fileName : fileNames) {
-                String imageDirectoryPath = getExternalFilesDir(Environment.DIRECTORY_PICTURES).getAbsolutePath();
-                String imagePath = imageDirectoryPath + File.separator + fileName;
-                Log.d(TAG, "performOperations: " + imagePath);
-                slideModelArrayList.add(new SlideModel(imagePath, ScaleTypes.FIT));
-            }
-        } else {
-            Log.d(TAG, "processWithData: is null");
-        }
+
+
     }
+}
+interface FetchDataCallback {
+    void onDataFetched(ArrayList<SlideModel> slideModels);
 }

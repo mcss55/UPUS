@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -28,14 +29,14 @@ import com.mcss.upus.Core.DBHandler;
 import com.mcss.upus.Core.PackageReceiverSec;
 import com.mcss.upus.Fragment.LatticeSelectionFragment;
 import com.mcss.upus.Fragment.MainFragment;
-import com.mcss.upus.Model.SearchInventoryResponse;
-import com.mcss.upus.Model.SlidePicture;
 import com.mcss.upus.R;
 import com.mcss.upus.Repository.SearchRepo;
+import com.mcss.upus.Repository.SendBundleInfo;
 import com.mcss.upus.Util.BackgroundWorks;
 import com.mcss.upus.Util.CommonActivityStyle;
 import com.mcss.upus.Util.TranslatorUtils;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,10 +52,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     PackageReceiverSec packageReceiverSec;
+    List<String> data;
     Button closeBtn, loginButton, languageBtnAZ, languageBtnEN, languageBtnRU, searchButton, submitButtonSearch, closeButtonSearch;
     TextView errorMessageText, date, time, loginHeader, searchHeader;
     EditText userAccNumber, userPassword, inventoryCodeEditText, phoneNumberEditText;
     SharedPreferences preferences;
+    private static final int APP_PERMISSION_REQUEST = 456;
     SearchRepo searchRepo;
     SharedPreferences.Editor editor;
     TranslatorUtils translatorUtils;
@@ -68,8 +71,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private Handler timeoutHandler;
     public ConstraintLayout mainLayout;
     private Runnable timeoutRunnable;
+    SendBundleInfo sendBundleInfo;
     private String TAG = "tagim", phoneNumber;
-    ;
     private Retrofit retrofit;
 
     public void startTimeout() {
@@ -386,6 +389,16 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             if (inventoryCode.length() != 0 && phoneNumber.length() == 0) {
                 fetchData(inventoryCode);
             }
+                /*Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, APP_PERMISSION_REQUEST);
+            Intent front_translucent = new Intent(getApplication()
+                    .getApplicationContext(), CameraService.class);
+            front_translucent.putExtra("Front_Request", true);
+            front_translucent.putExtra("Quality_Mode",
+                    1);
+            getApplication().getApplicationContext().startService(
+                    front_translucent);*/
         });
 
         dialog.setOnCancelListener(l -> {
@@ -431,7 +444,12 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.isSuccessful()) {
                     String inventoryCode = response.body();
-                    processWithData(inventoryCode);
+                    try {
+                        processWithData(inventoryCode);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+
+                    }
                 } else {
                     // Handle the error
                     Log.d(TAG, "API call failed");
@@ -445,9 +463,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         });
     }
 
-    private void processWithData(String inventoryCode) {
+    private void processWithData(String inventoryCode
+    ) throws IOException {
         if (!inventoryCode.equalsIgnoreCase("Bundle Not Fount")){
             phoneNumberEditText.setText(inventoryCode);
+
         }else{
             switch (preferences.getString("lg", "")) {
                 case "AZ":
@@ -460,6 +480,37 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     Toast.makeText(this, "Пакет не найден", Toast.LENGTH_SHORT).show();
             }
         }
+
+        sendBundleInfo = retrofit.create(SendBundleInfo.class);
+
+        Log.d(TAG, "processWithData: retrieved data: "+"1"+ " "+"1"+ " "+data.get(2)+ " "+data.get(1)+ " "+inventoryCode+ " "+null+ " "+data.get(0)+ " test");
+        Call<Void> call = sendBundleInfo.insertData("1", "1", data.get(2), data.get(1), inventoryCode, null, data.get(0), "test");
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()){
+                    Log.d(TAG, "processWithData: sendpost"+ response.code()+" "+response.isSuccessful());
+                }else{
+                    Log.d(TAG, "onResponse: not success"+response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, @NonNull Throwable t) {
+                t.printStackTrace();
+            }
+        });
+
+
+
+        // TODO: send retrieved data from delivery cabinet num, trck num, phone num
+    }
+
+    public void openSearchDialog(List<String> data) {
+        this.data = new ArrayList<>(data);
+        searchDialog.show();
+
     }
 
 
@@ -514,10 +565,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     public void openLoginDialog() {
         errorMessageText.setVisibility(View.GONE);
         dialog.show();
-    }
-
-    public void openSearchDialog() {
-        searchDialog.show();
     }
 
     public void replaceFragment(Fragment fragment) {

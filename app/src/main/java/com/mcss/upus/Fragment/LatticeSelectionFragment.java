@@ -18,13 +18,18 @@ import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.mcss.upus.Activity.MainActivity;
 import com.mcss.upus.R;
 import com.mcss.upus.Util.TranslatorUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
 public class LatticeSelectionFragment extends Fragment implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
     TranslatorUtils translatorUtils;
@@ -79,7 +84,6 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
 
     @SuppressLint({"ResourceType", "UseCompatLoadingForDrawables"})
     public void addRowWithData(String data1, String data2) {
-
 
 
         TableRow newRow = new TableRow(getActivity());
@@ -219,26 +223,17 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         latticeCloseButton.setOnClickListener(this);
 
 
-            addRowWithData("Small box", "1");
-            addRowWithData("Small box", "2");
-            addRowWithData("Small box", "3");
-            addRowWithData("Small box", "4");
-            addRowWithData("Small box", "5");
-            addRowWithData("Small box", "6");
-            addRowWithData("Small box", "7");
-            addRowWithData("Small box", "8");
-            addRowWithData("Small box", "9");
-            addRowWithData("Small box", "10");
-            addRowWithData("Small box", "11");
-            addRowWithData("Small box", "12");
+        addRowWithData("Small box", "3");
+        addRowWithData("Medium box", "3");
+        addRowWithData("Large box", "3");
 
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         translatorUtils = new TranslatorUtils(getActivity());
         translatorUtils.convertAllText(sharedPreferences.getString("lg", ""), LatticeSelectionFragment.this, view);
         translatorUtils.convertDynamicTextViews(sharedPreferences.getString("lg", ""), LatticeSelectionFragment.this, tableLayout);
-        /*HashMap<String, String> map = new HashMap<>();
 
+        /*HashMap<String, String> map = new HashMap<>();
 
         map.put("1", "Small box");
         map.put("2", "Small box");
@@ -256,7 +251,7 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
         return view;
     }
 
-    public void updateTextView(String text, int indexTxt, int indexRow){
+    public void updateTextView(String text, int indexTxt, int indexRow) {
         ((TextView) ((TableRow) tableLayout.getChildAt(indexRow)).getChildAt(indexTxt)).setText(text);
     }
 
@@ -273,26 +268,55 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
             // TODO : send row count to delvierscan fragment
 
             MainActivity mainActivity = (MainActivity) getActivity();
+
             if (mainActivity != null) {
-                mainActivity.replaceFragment(new DeliverScanFragment());
+                HashMap<String, List<String>> dataToDelivery = new HashMap<>();
+                Random randomNum = new Random();
+                for (Map.Entry<Integer, TextView> integerTextViewEntry : textViewCountNumberList.entrySet()) {
+                    for (int i = 0; i < Integer.parseInt(integerTextViewEntry.getValue().getText().toString()); i++) {
+                        Log.d(TAG, "addRow in lattice to dlvr: " + "A" + (randomNum.nextInt(50)+ 1) +
+                                "FLX2422" + (randomNum.nextInt(50) + 1) +
+                                "9945030012" + (randomNum.nextInt(50)+ 1));
+                        //addRowWithData("A" + (randomNum.nextInt(50) * 10 + 1), "FLX2422" + (randomNum.nextInt(50) * 10 + 1), "+9945030012" + (randomNum.nextInt(50) * 10 + 1))
+                        List<String> tempDataList = new ArrayList<>();
+                        tempDataList.add("A" + (randomNum.nextInt(50) * 10 + 1));
+                        tempDataList.add("FLX2422" + (randomNum.nextInt(50) * 10 + 1));
+                        tempDataList.add( "+9945030012" + (randomNum.nextInt(50) * 10 + 1));
+                        dataToDelivery.put(textViewTypeList.get(integerTextViewEntry.getKey()-3).getText().toString(),tempDataList);
+//                        textViewTypeList.forEach((key, value) -> Log.d(TAG, "for loop type: "+key+" value: "+value.getText().toString()));
+//                        Log.d(TAG, "for loop 1: "+integerTextViewEntry.getKey()+" value: "+integerTextViewEntry.getValue().getText().toString());
+                    }
+                }
+                mainActivity.replaceFragment(new DeliverScanFragment(dataToDelivery));
+            } else {
+                Log.d(TAG, "mainActivity is null");
             }
+
             return;
         }
 
         if (view instanceof Button) {
             if (((Button) view).getText().equals("+")) {
+                TextView availableNumber = textViewAvailableList.get(view.getId() - 3);
                 TextView textViewCount = textViewCountNumberList.get(view.getId() - 1);
-                if (textViewCount != null) {
+                if (textViewCount != null && availableNumber != null
+                        && Integer.parseInt(textViewCount.getText().toString()) <
+                        Integer.parseInt(availableNumber.getText().toString())) {
+
                     int i = Integer.parseInt(textViewCount.getText().toString()) + 1;
                     textViewCount.setText(String.valueOf(i));
                 }
             } else if (((Button) view).getText().equals("-")) {
+                TextView availableNumber = textViewAvailableList.get(view.getId() - 1);
                 TextView textViewCount = textViewCountNumberList.get(view.getId() + 1);
-                if (textViewCount != null && Integer.parseInt(textViewCount.getText().toString()) > 0) {
+                if (textViewCount != null &&
+                        Integer.parseInt(textViewCount.getText().toString()) > 0) {
+
                     int i = Integer.parseInt(textViewCount.getText().toString()) - 1;
                     textViewCount.setText(String.valueOf(i));
                 }
             } else if (!((Button) view).getText().toString().equals("Next step")) {
+
                 MainActivity mainActivity = (MainActivity) getActivity();
                 if (mainActivity != null) {
                     mainActivity.replaceFragment(new MainFragment());
@@ -318,7 +342,7 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         translatorUtils.convertAllText(sharedPreferences.getString("lg", ""), LatticeSelectionFragment.this, this.getView());
-        Log.d(TAG, "onSharedPreferenceChanged: changed: "+ sharedPreferences);
+        Log.d(TAG, "onSharedPreferenceChanged: changed: " + sharedPreferences);
         translatorUtils.convertDynamicTextViews(sharedPreferences.getString("lg", ""), LatticeSelectionFragment.this, tableLayout);
 
     }

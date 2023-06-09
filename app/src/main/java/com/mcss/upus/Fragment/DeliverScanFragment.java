@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -45,16 +46,24 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
     ImageView closeButton;
     HashMap<Integer, TextView> cellPhoneNumberTxtHashMap;
     HashMap<Integer, List<String>> data;
+    HashMap<String,List<String>> dataFromLattice;
+    private static DeliverScanFragment instance = null;
     static int countDataKey;
+    private final String TAG = "deliverTag";
 
 
-    public DeliverScanFragment() {
+    public DeliverScanFragment(HashMap<String, List<String>> dataFromLattice) {
+        this.dataFromLattice = dataFromLattice;
         inventoryButtonHashMap = new HashMap<>();
         removeButtonDecreaseHashMap = new HashMap<>();
         cabinetNumberTxtHashMap = new HashMap<>();
         trackingNumberTxtHashMap = new HashMap<>();
         cellPhoneNumberTxtHashMap = new HashMap<>();
 
+    }
+
+    public static DeliverScanFragment getInstance() {
+        return instance;
     }
 
     private int pxToDp(int dp) {
@@ -65,7 +74,7 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
         );
     }
 
-    private void addRowWithData(String data1, String data2, String data3) {
+    public void addRowWithData(String data1, String data2, String data3) {
 
         TableRow tableRow = new TableRow(getActivity());
 
@@ -169,6 +178,7 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
     }
 
     @Override
@@ -192,7 +202,10 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
         addRowWithData("A432", "A2sadsd", "+994501234567");
         addRowWithData("A433", "A2sads2", "+994503481507");
         addRowWithData("A434", "A2sads3", "+994503481503");
-        addRowWithData("A435", "A2sads4", "+994503481504");
+
+        for (Map.Entry<String, List<String>> stringListEntry : dataFromLattice.entrySet()) {
+            Log.d(TAG, "onCreateView: data from lattice: "+stringListEntry.getKey()+" list: "+stringListEntry.getValue());
+        }
 
         closeButton = view.findViewById(R.id.closeButtonDelivery);
         closeButton.setOnClickListener(this);
@@ -201,6 +214,7 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
         translatorUtils = new TranslatorUtils(getActivity());
 
         translatorUtils.convertAllText(sharedPreferences.getString("lg", ""), DeliverScanFragment.this, view);
+        instance=this;
         return view;
 
     }
@@ -231,7 +245,8 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
                         trackingNumber.getText().toString(),
                         cellPhoneNumber.getText().toString())));
                 Log.d("deliverytag", "onClick: " + data + " Cabinet: " + data.get(countDataKey - 1).get(0) + " achildi");
-                ((MainActivity) getActivity()).openSearchDialog();
+
+                ((MainActivity) getActivity()).openSearchDialog(data.get(countDataKey-1));
 
             } else if (((Button) view).getText().toString().equalsIgnoreCase("remove")) {
 
