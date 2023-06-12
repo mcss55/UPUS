@@ -110,6 +110,7 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
         trackingNumber.setLayoutParams(layoutParams2);
         trackingNumber.setId(View.generateViewId());
 
+
         // Cell Phone Number
 
         cellPhoneNumber = new TextView(getActivity());
@@ -131,7 +132,7 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
         btnInverntory = new Button(getActivity());
         btnInverntory.setId(View.generateViewId());
         btnInverntory.setLayoutParams(new TableRow.LayoutParams(pxToDp(192), pxToDp(85)));
-        btnInverntory.setText("Inventory");
+        btnInverntory.setText("inventory");
         btnInverntory.setTextColor(Color.WHITE);
         btnInverntory.setTextSize(TypedValue.COMPLEX_UNIT_SP, 31);
         btnInverntory.setBackgroundResource(R.drawable.bordered_button_green);
@@ -289,7 +290,6 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
         data = new HashMap<>();
 
         if (view instanceof Button) {
-
             if (((Button) view).getText().toString().equalsIgnoreCase("inventory")) {
 
                 Button buttonInventory = (Button) view;
@@ -301,7 +301,8 @@ public class DeliverScanFragment extends Fragment implements View.OnClickListene
                         cellPhoneNumber.getText().toString())));
                 Log.d("deliverytag", "onClick: " + data + " Cabinet: " + data.get(countDataKey - 1).get(0) + " achildi");
 
-                ((MainActivity) getActivity()).openSearchDialog(data.get(countDataKey-1));
+
+                ((MainActivity) getActivity()).openSearchDialog(data.get(countDataKey-1), trackingNumber, cellPhoneNumber, cabinetNumber.getText().toString());
 
             } else if (((Button) view).getText().toString().equalsIgnoreCase("remove")) {
 

@@ -1,6 +1,8 @@
 package com.mcss.upus.Fragment;
 
 
+import static openlocksp.LockApi.lockCmd;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -22,6 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.internal.LinkedTreeMap;
 import com.mcss.upus.Activity.MainActivity;
+import com.mcss.upus.Model.PickUpResponse;
 import com.mcss.upus.R;
 import com.mcss.upus.Repository.CargomatUpdate;
 import com.mcss.upus.Repository.PickUpRepository;
@@ -71,7 +74,7 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
         View view = inflater.inflate(R.layout.fragment_pick_up_verification_code, container, false);
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         translatorUtils = new TranslatorUtils(getActivity());
-        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), PickUpVerificationCodeFragment.this, view);
+        translatorUtils.convertAllText(sharedPreferences.getString("lg", ""), PickUpVerificationCodeFragment.this, view);
 
         return view;
     }
@@ -150,7 +153,6 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
     }
 
 
-
     public void onNumpadButtonClick(View view) {
         Objects.requireNonNull((MainActivity) getActivity()).resetTimeout();
         Button button = (Button) view;
@@ -192,64 +194,65 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
             if (activity != null) {
                 activity.replaceFragment(new MainFragment());
             }
-        }else if (view.getId() == R.id.numpadButtonSubmit){
+        } else if (view.getId() == R.id.numpadButtonSubmit) {
             boolean allFieldsFull = true;
             for (EditText box : boxes) {
                 if (box.getText().toString().isEmpty())
                     allFieldsFull = false;
             }
-            if (allFieldsFull){
-                System.out.println("All fields is: "+allFieldsFull);
+            if (allFieldsFull) {
+                System.out.println("All fields is: " + allFieldsFull);
                 StringBuilder password = new StringBuilder();
                 for (EditText box : boxes) {
                     password.append(box.getText().toString());
                 }
-                System.out.println("pass: "+password);
+                System.out.println("pass: " + password);
                 openLattice(password.toString());
-            }else{
-                System.out.println("All fields is: "+allFieldsFull);
+            } else {
+                System.out.println("All fields is: " + allFieldsFull);
             }
         }
     }
 
     private void openLattice(String password) {
-        Call<Object> call = pickUpRepository.getPickUpDetails(password);
+        Call<PickUpResponse> call = pickUpRepository.getPickUpDetails(password);
 
-        call.enqueue(new Callback<Object>() {
+        call.enqueue(new Callback<PickUpResponse>() {
             @Override
-            public void onResponse(Call<Object> call, Response<Object> response) {
-                Log.d(TAG, "onResponse: response code "+response.code());
-                if (response.isSuccessful()) {
-                    if (response.body() instanceof List){
-                        Log.d(TAG, "onResponse: list: "+response.body());
+            public void onResponse(Call<PickUpResponse> call, Response<PickUpResponse> response) {
+                Log.d(TAG, "onResponse: response code " + response.code());
+                if (response.code() == 200) {
+                    /*if (response.body() instanceof List) {
+                        Log.d(TAG, "onResponse: list: " + response.body());
                         LinkedTreeMap<String, Object> linkedTreeMap = ((List<LinkedTreeMap<String, Object>>) response.body()).get(0);
                         processWithData((String) linkedTreeMap.get("box_no"), password, (String) linkedTreeMap.get("mainboard_id"), (String) linkedTreeMap.get("device_id"));
-                    }else{
+                    } else {
                         if (response.body() instanceof String) {
-                            Log.d(TAG, "onResponse: string: "+response.body());
+                            Log.d(TAG, "onResponse: string: " + response.body());
                             processWithData(response.body().toString(), null, null, null);
                         }
-                    }
-                    Log.d(TAG, "onResponse: response.body() "+response.body());
+                    }*/
+                    PickUpResponse pickUpResponse = response.body();
+                    processWithData(pickUpResponse.getBoxNo(),password, pickUpResponse.getMainboardId(), pickUpResponse.getDeviceId());
+                    Log.d(TAG, "onResponse: response.body() " + response.body());
 
                 } else {
-                    // Handle the error
-                    Toast.makeText(getContext(), "Fetch failed", Toast.LENGTH_SHORT).show();
+                    processWithData(null, null,null,null);
                 }
             }
 
             @Override
-            public void onFailure(Call<Object> call, Throwable t) {
+            public void onFailure(Call<PickUpResponse> call, Throwable t) {
                 t.printStackTrace();
             }
         });
     }
 
-    private void processWithData(final String boxNo, String password, String mainboard_id, String device_id) {
+    private void processWithData(final String boxNo, String password, Integer mainboard_id, Integer device_id) {
 
-        Log.d(TAG, "processWithData: "+boxNo);
+        Log.d(TAG, "processWithData: " + boxNo);
 
-        if (boxNo.equalsIgnoreCase("Code Not Fount")){
+        if (boxNo == null) {
             switch (sharedPreferences.getString("lg", "")) {
                 case "AZ":
                     Toast.makeText(getActivity(), "Bağlama tapılmadı", Toast.LENGTH_SHORT).show();
@@ -260,16 +263,32 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
                 case "RU":
                     Toast.makeText(getActivity(), "Код не найден", Toast.LENGTH_SHORT).show();
             }
-        }else {
-            if (password != null){
+        } else {
+            if (password != null) {
+
+                openLock(mainboard_id.byteValue()
+                        , Integer.valueOf(boxNo.replace("A", "")).byteValue(), new String[3]);
+                switch (sharedPreferences.getString("lg", "")) {
+                    case "AZ":
+                        Toast.makeText(getActivity(), boxNo + " açıqdır", Toast.LENGTH_SHORT).show();
+                        break;
+                    case "EN":
+                        Toast.makeText(getActivity(), boxNo + " is open", Toast.LENGTH_SHORT).show();
+                        break;
+                    case "RU":
+                        Toast.makeText(getActivity(), boxNo + " открыта", Toast.LENGTH_SHORT).show();
+                }
+
                 Call<String> call = cargomatUpdate.updateData(null, password);
                 call.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         if (response.isSuccessful())
-                            Log.d(TAG, "onResponse: cargomatUpdate: "+response.body());
-                        else
-                            Log.d(TAG, "onResponse: cargomatUpdate: "+response.code());
+                            Log.d(TAG, "onResponse: cargomatUpdate: " + response.body());
+                        else {
+                            Log.d(TAG, "onResponse: cargomatUpdate: " + response.code());
+
+                        }
                     }
 
                     @Override
@@ -277,36 +296,22 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
                         t.printStackTrace();
                     }
                 });
-            }
-            switch (sharedPreferences.getString("lg", "")) {
-                case "AZ":
-                    Toast.makeText(getActivity(), boxNo+" açıqdır", Toast.LENGTH_SHORT).show();
-                    break;
-                case "EN":
-                    Toast.makeText(getActivity(), boxNo+" is open", Toast.LENGTH_SHORT).show();
-                    break;
-                case "RU":
-                    Toast.makeText(getActivity(), boxNo+" открыта", Toast.LENGTH_SHORT).show();
-            }
+                if (getActivity() != null) {
+                    ((MainActivity) getActivity()).replaceFragment(new MainFragment());
+                }
 
-//            openLock(Byte.parseByte(mainboard_id),Byte.parseByte(boxNo.replace("A", "")),null);
-
+            }
 
         }
 
-        if (getActivity() != null){
-            ((MainActivity) getActivity()).replaceFragment(new MainFragment());
-        }
+
+
     }
-   /* public static boolean openLock(byte boardNo, byte lockNo, String[] rsMsg)
-    {
+
+    public boolean openLock(byte boardNo, byte lockNo, String[] rsMsg) {
         return lockCmd((byte) 0x8A, boardNo, lockNo, rsMsg);
     }
 
-    public static boolean openAllLock(byte boardNo, String[] rsMsg)
-    {
-        return lockCmd((byte) 0x9D, boardNo, (byte)0x02, rsMsg);
-    }*/
 
     public void onClearButtonClick(View view) {
         Objects.requireNonNull((MainActivity) getActivity()).resetTimeout();
@@ -318,7 +323,7 @@ public class PickUpVerificationCodeFragment extends Fragment implements View.OnC
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        translatorUtils.convertAllText(sharedPreferences.getString("lg",""), PickUpVerificationCodeFragment.this, this.getView());
+        translatorUtils.convertAllText(sharedPreferences.getString("lg", ""), PickUpVerificationCodeFragment.this, this.getView());
     }
 
 }

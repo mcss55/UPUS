@@ -281,8 +281,8 @@ public class LatticeSelectionFragment extends Fragment implements View.OnClickLi
                         //addRowWithData("A" + (randomNum.nextInt(50) * 10 + 1), "FLX2422" + (randomNum.nextInt(50) * 10 + 1), "+9945030012" + (randomNum.nextInt(50) * 10 + 1))
                         List<String> tempDataList = new ArrayList<>();
                         tempDataList.add("A" + (randomNum.nextInt(50) + 1));
-                        tempDataList.add("FLX2422" + (randomNum.nextInt(50) + 1));
-                        tempDataList.add( "+9945030012" + (randomNum.nextInt(50) + 1));
+                        tempDataList.add("         "); // 9 space trckng n
+                        tempDataList.add( "           "); // 13 space phn n
                         dataToDelivery.put(Objects.requireNonNull(textViewTypeList.get(integerTextViewEntry.getKey() - 3)).getText().toString(),tempDataList);
 //                        textViewTypeList.forEach((key, value) -> Log.d(TAG, "for loop type: "+key+" value: "+value.getText().toString()));
 //                        Log.d(TAG, "for loop 1: "+integerTextViewEntry.getKey()+" value: "+integerTextViewEntry.getValue().getText().toString());

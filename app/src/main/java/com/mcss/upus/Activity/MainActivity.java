@@ -1,5 +1,8 @@
 package com.mcss.upus.Activity;
 
+import static openlocksp.LockApi.lockCmd;
+import static openlocksp.LockApi.setCommLock;
+
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
@@ -43,6 +46,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import openlocksp.KCallBack;
+import openlocksp.KSerialPor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -60,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     private static final int APP_PERMISSION_REQUEST = 456;
     SearchRepo searchRepo;
     SharedPreferences.Editor editor;
+    public static MainActivity mainActivity;
     TranslatorUtils translatorUtils;
     private final String BASE_URL = "https://flysistem.flyex.az/api/";
     ImageView settingsButton, mapLogoButton;
@@ -74,6 +80,15 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     SendBundleInfo sendBundleInfo;
     private String TAG = "tagim", phoneNumber;
     private Retrofit retrofit;
+    public KSerialPor COM1;
+    private TextView trackingNumber;
+    private TextView cellPhoneNumber;
+    private String cabinetCode;
+
+
+    public void initCOM(KCallBack.CallBackInterface aCBI) {
+        COM1 = new KSerialPor(aCBI);
+    }
 
     public void startTimeout() {
         timeoutHandler = new Handler();
@@ -96,6 +111,22 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainActivity = this;
+
+        mainActivity.initCOM(str -> {
+            //do something
+            Log.d(TAG, "sendToData: write log " + "Serial port receiving：" + str + "\n");
+        });
+
+        new Thread(() -> {
+            String[] rsMsg = {""};
+            Log.d(TAG, "onCreate: main connect to hardwr: " + setCommLock("/dev/ttyS3", 9600, rsMsg));
+
+            Log.d(TAG, "run: connect to serial port: " + "Connect the control board," + rsMsg[0]);
+
+        }).start();
+
 
         Gson gson = new GsonBuilder().setLenient().create();
         retrofit = new Retrofit.Builder()
@@ -269,9 +300,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         // DB WORKS END
 
 
-
-
-
         mainLayout = findViewById(R.id.mainLayout);
         mainLayout.setOnTouchListener((view, motionEvent) -> {
             resetTimeout();
@@ -387,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
             phoneNumber = this.phoneNumberEditText.getText().toString();
             if (inventoryCode.length() != 0 && phoneNumber.length() == 0) {
-                fetchData(inventoryCode);
+                fetchData(inventoryCode, cabinetCode);
             }
                 /*Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + getPackageName()));
@@ -435,9 +463,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     }
 
-    private void fetchData(String inventoryCode) {
+    private void fetchData(String bundelCode, String cabinetCode) {
 
-        Call<String> call = searchRepo.getPhoneNumber(inventoryCode);
+        Call<String> call = searchRepo.getPhoneNumber(bundelCode);
 
         call.enqueue(new Callback<String>() {
             @Override
@@ -446,7 +474,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                     String inventoryCode = response.body();
                     try {
                         if (inventoryCode != null) {
-                            processWithData(inventoryCode);
+                            processWithData(inventoryCode, bundelCode, cabinetCode);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -465,12 +493,25 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         });
     }
 
-    private void processWithData(String inventoryCode
-    ) throws IOException {
-        if (!inventoryCode.equalsIgnoreCase("Bundle Not Fount")){
-            phoneNumberEditText.setText(inventoryCode);
+    public boolean openLock(byte boardNo, byte lockNo, String[] rsMsg) {
+        return lockCmd((byte) 0x8A, boardNo, lockNo, rsMsg);
+    }
 
-        }else{
+    private void processWithData(String inventoryCode, String bundleCode, String cabinetCode
+    ) throws IOException {
+        if (!inventoryCode.equalsIgnoreCase("Bundle Not Fount")) {
+            phoneNumberEditText.setText(inventoryCode);
+            searchDialog.dismiss();
+            trackingNumber.setText(bundleCode);
+            cellPhoneNumber.setText(inventoryCode);
+            if (openLock((byte) 1
+                    , Integer.valueOf(cabinetCode.replace("A", "")).byteValue(), new String[3])){
+                Toast.makeText(this, cabinetCode+" is open", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this, "Error when try to open box "+cabinetCode, Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
             switch (preferences.getString("lg", "")) {
                 case "AZ":
                     Toast.makeText(this, "Bağlama tapılmadı", Toast.LENGTH_SHORT).show();
@@ -485,16 +526,16 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
         sendBundleInfo = retrofit.create(SendBundleInfo.class);
 
-        Log.d(TAG, "processWithData: retrieved data: "+"1"+ " "+"1"+ " "+data.get(2)+ " "+data.get(1)+ " "+inventoryCode+ " "+null+ " "+data.get(0)+ " test");
+        Log.d(TAG, "processWithData: retrieved data: " + "1" + " " + "1" + " " + data.get(2) + " " + data.get(1) + " " + inventoryCode + " " + null + " " + data.get(0) + " test");
         Call<Void> call = sendBundleInfo.insertData("1", "1", data.get(2), data.get(1), inventoryCode, null, data.get(0), "test");
 
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()){
-                    Log.d(TAG, "processWithData: sendpost"+ response.code()+" "+response.isSuccessful());
-                }else{
-                    Log.d(TAG, "onResponse: not success"+response.code());
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "processWithData: sendpost" + response.code() + " " + response.isSuccessful());
+                } else {
+                    Log.d(TAG, "onResponse: not success" + response.code());
                 }
             }
 
@@ -505,12 +546,14 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         });
 
 
-
         // TODO: send retrieved data from delivery cabinet num, trck num, phone num
     }
 
-    public void openSearchDialog(List<String> data) {
+    public void openSearchDialog(List<String> data, TextView trackingNumber, TextView cellPhoneNumber, String cabinetCode) {
         this.data = new ArrayList<>(data);
+        this.trackingNumber = trackingNumber;
+        this.cellPhoneNumber = cellPhoneNumber;
+        this.cabinetCode = cabinetCode;
         searchDialog.show();
 
     }

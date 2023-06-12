@@ -45,6 +45,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
     implementation 'com.squareup.picasso:picasso:2.8'
     testImplementation 'junit:junit:4.13.2'
+    implementation 'com.github.licheedev.Android-SerialPort-API:serialport:1.0.1'
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
     //noinspection GradleCompatible
     androidTestImplementation 'androidx.test:runner:1.5.2'

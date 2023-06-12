@@ -12,6 +12,6 @@ import retrofit2.http.Query;
 public interface PickUpRepository {
 
     @POST("pickup_code")
-    Call<Object> getPickUpDetails(@Query("password") String pickUpCode);
+    Call<PickUpResponse> getPickUpDetails(@Query("password") String pickUpCode);
 
 }
